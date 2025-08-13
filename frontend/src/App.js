@@ -41,7 +41,7 @@ export default function App() {
 
   // Fetch events from backend
   useEffect(() => {
-    const API_BASE = process.env.TorontoToday_API_URL;
+    const API_BASE = process.env.REACT_APP_API_URL;
 
     const fetchEvents = async () => {
       try {
