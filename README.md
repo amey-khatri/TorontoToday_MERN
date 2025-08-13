@@ -1,5 +1,7 @@
 # TorontoToday
 
+Live Site: https://torontotoday.vercel.app
+
 A MERN + Python worker app that discovers events in Toronto, stores them in MongoDB, and visualizes them on an interactive map with clustering, filters, search, and rich event details.
 
 - Frontend: React + MUI + Leaflet ([frontend/](frontend))
