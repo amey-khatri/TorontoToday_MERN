@@ -9,9 +9,9 @@ const cors = require("cors"); // NEW
 const allowedOrigins = [
   process.env.FRONTEND_URL, // e.g. https://yourdomain.com (prod)
   "https://toronto-today-mern.vercel.app", // Vercel prod
-  "http://localhost:5173", // Vite default
+  "http://localhost:3001", // Vite default
   "http://192.168.2.167:3001",
-  "http://localhost:3001", // CRA alt
+  "http://localhost:3000", // CRA alt
   "http://127.0.0.1:3001",
 ].filter(Boolean);
 
