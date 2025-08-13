@@ -8,7 +8,6 @@ const cors = require("cors"); // NEW
 // Allow local dev origins and a prod URL from .env
 const allowedOrigins = [
   process.env.FRONTEND_URL, // e.g. https://yourdomain.com (prod)
-  "https://toronto-today-mern.vercel.app", // Vercel prod
   "http://localhost:3001", // Vite default
   "http://192.168.2.167:3001",
   "http://localhost:3000", // CRA alt
