@@ -8,6 +8,7 @@ const cors = require("cors"); // NEW
 // Allow local dev origins and a prod URL from .env
 const allowedOrigins = [
   process.env.FRONTEND_URL, // e.g. https://yourdomain.com (prod)
+  "https://toronto-today-mern.vercel.app", // Vercel prod
   "http://localhost:5173", // Vite default
   "http://192.168.2.167:3001",
   "http://localhost:3001", // CRA alt
@@ -40,6 +41,6 @@ app.use("/events", eventsRouter);
 const event_idsRouter = require("./routes/event_ids");
 app.use("/event_ids", event_idsRouter);
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
+app.listen(4000, () => {
+  console.log("Server is running on port 4000");
 });
