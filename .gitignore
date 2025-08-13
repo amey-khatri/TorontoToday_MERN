@@ -1,0 +1,58 @@
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.cache/
+.tmp/
+.nyc_output/
+coverage/
+coverage-*/
+
+# Framework hosts (safe to ignore if unused)
+.next/
+.vercel/
+.netlify/
+
+# Vite cache
+.vite/
+
+# Env files (keep examples)
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+ENV/
+env/
+worker/.venv/
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+.mypy_cache/
+.dmypy.json
+.pyre/
+.ipynb_checkpoints/
+
+# Editors/IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
