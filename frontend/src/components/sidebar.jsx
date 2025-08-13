@@ -134,7 +134,6 @@ export default function SidebarComponent({
             }),
             scrollbarColor: `${theme.palette.text.secondary} ${theme.palette.background.paper}`,
             scrollbarWidth: "auto",
-            scrollbarGutter: "stable",
             backgroundColor: open
               ? theme.palette.background.paper
               : "transparent",
