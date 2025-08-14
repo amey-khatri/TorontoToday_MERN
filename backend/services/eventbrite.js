@@ -3,6 +3,7 @@ const axios = require("axios");
 const Event = require("../models/event"); // Add this import
 const Event_ids = require("../models/event_id"); // Add this import
 const pl = require("p-limit");
+const e = require("express");
 const pLimit = typeof pl === "function" ? pl : pl.default;
 const client = axios.create({
   baseURL: "https://www.eventbriteapi.com/v3/",
@@ -35,7 +36,7 @@ const categoryMap = {
   120: "School Activities",
 };
 
-// Returns an array of { event, venue } objects
+// Returns an array item with the fetched event and source _id
 async function fetchEventData(event_scraped) {
   const event_id =
     event_scraped?.ev_id ||
@@ -71,7 +72,9 @@ async function fetchEventData(event_scraped) {
             : `${t.minimum_ticket_price.major_value}`;
       }
     }
-    return { event, price };
+
+    // Return the source document _id so we can delete later
+    return { event, price, srcId: event_scraped._id };
   } catch (err) {
     if (err.response?.status === 429) {
       console.log(
@@ -118,14 +121,14 @@ async function fetchAllEvents(concurrency = 10) {
   const tasks = eventIDS.map((e) => limit(() => fetchEventData(e)));
   const results = await Promise.all(tasks);
 
-  // Keep only successful objects
-  const events = results.filter((r) => r && r.event);
-  console.log(`Fetched ${events.length} events across all venues.`);
+  // Keep only successful fetches
+  const ok = results.filter((r) => r && r.event);
+  console.log(`Fetched ${ok.length} events across all venues.`);
 
   // Only process events happening within the next 2 weeks
   const now = new Date();
   const twoWeeksAway = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000);
-  const inWindow = events.filter(({ event }) => {
+  const inWindow = ok.filter(({ event }) => {
     const startStr = event.start?.local;
     if (!startStr) return false;
     const start = new Date(startStr);
@@ -182,18 +185,63 @@ async function fetchAllEvents(concurrency = 10) {
         op.updateOne.update.$set.endTime
     );
 
-    const result = await Event.bulkWrite(safeOps);
+    if (safeOps.length === 0) {
+      console.log("No valid bulk ops to write.");
+
+      // Delete all successfully fetched IDs (both in-window and out-of-window)
+      const deletions = ok
+        .map(({ srcId }) => srcId)
+        .filter(Boolean)
+        .map((id) => ({ deleteOne: { filter: { _id: id } } }));
+
+      if (deletions.length) {
+        await Event_ids.bulkWrite(deletions, { ordered: false });
+        console.log(
+          `Deleted ${deletions.length} fetched event IDs (no valid ops).`
+        );
+      }
+
+      return { upsertedCount: 0, modifiedCount: 0 };
+    }
+
+    const result = await Event.bulkWrite(safeOps, { ordered: false });
     console.log(`Successfully processed ${safeOps.length} events:`, {
       inserted: result.upsertedCount,
       updated: result.modifiedCount,
     });
+
+    // Delete all successfully fetched IDs (both in-window and out-of-window)
+    const deletions = ok
+      .map(({ srcId }) => srcId)
+      .filter(Boolean)
+      .map((id) => ({ deleteOne: { filter: { _id: id } } }));
+
+    if (deletions.length) {
+      await Event_ids.bulkWrite(deletions, { ordered: false });
+      console.log(`Deleted ${deletions.length} fetched event IDs.`);
+    }
+
     return result;
+  }
+
+  // No events in window; still delete fetched IDs to avoid re-processing
+  if (ok.length) {
+    const deletions = ok
+      .map(({ srcId }) => srcId)
+      .filter(Boolean)
+      .map((id) => ({ deleteOne: { filter: { _id: id } } }));
+    await Event_ids.bulkWrite(deletions, { ordered: false });
+    console.log(
+      `Deleted ${deletions.length} fetched event IDs (out-of-window).`
+    );
   }
 
   if (rateLimitHit) {
     console.log("⚠️ Execution stopped early due to rate limit");
-    return { error: "Rate limit hit", processedEvents: events.length };
+    return { error: "Rate limit hit", processedEvents: ok.length };
   }
+
+  return { upsertedCount: 0, modifiedCount: 0 };
 }
 
 module.exports = { fetchAllEvents };

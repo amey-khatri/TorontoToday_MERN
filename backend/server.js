@@ -40,6 +40,6 @@ app.use("/events", eventsRouter);
 const event_idsRouter = require("./routes/event_ids");
 app.use("/event_ids", event_idsRouter);
 
-app.listen(4000, () => {
+app.listen(3000, () => {
   console.log("Server is running on port 4000");
 });

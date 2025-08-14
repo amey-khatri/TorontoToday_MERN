@@ -59,11 +59,22 @@ async function getEvent(req, res, next) {
 // Fetch all events at given venues
 router.post("/fetch-events", async (req, res) => {
   try {
-    await fetchAllEvents();
-    res.json({ message: "Events fetched and stored successfully." });
+    const result = await fetchAllEvents(10); // or from req.body
+    // Normalize result for logging/clients
+    const payload = {
+      upsertedCount: result?.upsertedCount ?? 0,
+      modifiedCount: result?.modifiedCount ?? 0,
+      processedEvents: result?.processedEvents ?? 0,
+      rateLimit: !!result?.error,
+    };
+    return res.status(200).json({
+      ok: true,
+      message: "Fetch complete",
+      ...payload,
+    });
   } catch (err) {
-    console.error("Error fetching events:", err);
-    res.status(500).json({ error: "Failed to fetch events" });
+    console.error("fetch-events failed:", err);
+    return res.status(500).json({ ok: false, message: err.message });
   }
 });
 

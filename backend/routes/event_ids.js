@@ -26,4 +26,17 @@ router.delete("/", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const event_id = await Event_id.findById(req.params.id);
+    if (!event_id) {
+      return res.status(404).json({ message: "Event ID not found" });
+    }
+    await event_id.deleteOne();
+    res.json({ message: "Event ID deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
