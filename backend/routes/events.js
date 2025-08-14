@@ -57,25 +57,49 @@ async function getEvent(req, res, next) {
 }
 
 // Fetch all events at given venues
-router.post("/fetch-events", async (req, res) => {
-  try {
-    const result = await fetchAllEvents(10); // or from req.body
-    // Normalize result for logging/clients
-    const payload = {
-      upsertedCount: result?.upsertedCount ?? 0,
-      modifiedCount: result?.modifiedCount ?? 0,
-      processedEvents: result?.processedEvents ?? 0,
-      rateLimit: !!result?.error,
-    };
-    return res.status(200).json({
-      ok: true,
-      message: "Fetch complete",
-      ...payload,
-    });
-  } catch (err) {
-    console.error("fetch-events failed:", err);
-    return res.status(500).json({ ok: false, message: err.message });
-  }
+router.post("/fetch-events/", (req, res) => {
+  lastFetch = {
+    startedAt: new Date(),
+    finishedAt: null,
+    ok: null,
+    result: null,
+    error: null,
+  };
+  res.status(202).json({
+    ok: true,
+    message: "Fetch started",
+    startedAt: lastFetch.startedAt,
+  });
+
+  // Run in background
+  setImmediate(async () => {
+    try {
+      const result = await fetchAllEvents(10);
+      const payload = {
+        upsertedCount: result?.upsertedCount ?? 0,
+        modifiedCount: result?.modifiedCount ?? 0,
+        processedEvents: result?.processedEvents ?? 0,
+        rateLimit: !!result?.error,
+      };
+      lastFetch = {
+        ...lastFetch,
+        finishedAt: new Date(),
+        ok: true,
+        result: payload,
+        error: null,
+      };
+      console.log("Fetch finished:", payload);
+    } catch (err) {
+      lastFetch = {
+        ...lastFetch,
+        finishedAt: new Date(),
+        ok: false,
+        result: null,
+        error: err.message || String(err),
+      };
+      console.error("fetch-events/async failed:", err);
+    }
+  });
 });
 
 module.exports = router;

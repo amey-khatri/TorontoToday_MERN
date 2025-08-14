@@ -58,7 +58,7 @@ SEED_PATHS = [
     f"/d/{CITY_SLUG}/free--events/?page={{page}}",
 ]
 
-MAX_PAGES_PER_SEED = 20  # tune how deep you want to crawl
+MAX_PAGES_PER_SEED = 10   # tune how deep you want to crawl
 REQUEST_TIMEOUT = 20
 EVENT_ID_RE = re.compile(r"/e/[^/]*-(\d+)(?:/|$)")
 
@@ -148,6 +148,10 @@ def main():
 
     changed = upsert_event_ids(ids)
     print(f"Upserted {len(ids)} IDs (changed {changed}) to {DB_NAME}.{COLL_NAME}")
+
+    response = requests.post('https://torontotoday-mern.onrender.com/events/fetch-events')
+    
+    print("Triggered backend to fetch events:", response.status_code, response.text)
 
 
 
