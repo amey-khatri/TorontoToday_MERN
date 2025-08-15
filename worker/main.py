@@ -52,21 +52,22 @@ BASE = "https://www.eventbrite.ca"
 # Widen coverage by hitting several stable listing variants
 SEED_PATHS = [
     f"/d/{CITY_SLUG}/all-events/?page={{page}}",
-    f"/d/{CITY_SLUG}/today/?page={{page}}",
-    f"/d/{CITY_SLUG}/this-week/?page={{page}}",
-    f"/d/{CITY_SLUG}/this-weekend/?page={{page}}",
-    f"/d/{CITY_SLUG}/next-week/?page={{page}}",
-    f"/d/{CITY_SLUG}/free--events/?page={{page}}",
+    # f"/d/{CITY_SLUG}/today/?page={{page}}",
+    # f"/d/{CITY_SLUG}/this-week/?page={{page}}",
+    # f"/d/{CITY_SLUG}/this-weekend/?page={{page}}",
+    # f"/d/{CITY_SLUG}/next-week/?page={{page}}",
+    # f"/d/{CITY_SLUG}/free--events/?page={{page}}",
 ]
 
-MAX_PAGES_PER_SEED = 5   # tune how deep you want to crawl
-REQUEST_TIMEOUT = 20
+MAX_PAGES_PER_SEED = 1   # tune how deep you want to crawl
+REQUEST_TIMEOUT = 40
 EVENT_ID_RE = re.compile(r"/e/[^/]*-(\d+)(?:/|$)")
 
 session = requests.Session()
 session.headers.update({
-    "User-Agent": "Mozilla/5.0 (compatible; EB-Scraper/1.0)",
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
     "Accept-Language": "en-CA,en;q=0.9",
+
 })
 
 
@@ -129,6 +130,8 @@ def scrape_event_ids():
             # skip if this page failed after retries
             time.sleep(0.2)
             continue
+        
+        print(f"HTML content from {final_url} (first 500 chars): {html[:500]}")
 
         ids = extract_event_ids(html, final_url)
         all_ids.update(ids)
