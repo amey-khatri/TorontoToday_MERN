@@ -19,6 +19,7 @@ load_dotenv()  # Load variables from .env into environment
 MONGO_URI = os.getenv("MONGO_URI")
 DB_NAME = os.getenv("DB_NAME", "test")
 COLL_NAME = os.getenv("COLL_NAME", "event_ids")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 def upsert_event_ids(ids):
@@ -149,7 +150,7 @@ def main():
     changed = upsert_event_ids(ids)
     print(f"Upserted {len(ids)} IDs (changed {changed}) to {DB_NAME}.{COLL_NAME}")
 
-    response = requests.post('https://torontotoday-mern.onrender.com/events/fetch-events')
+    response = requests.post('${DATABASE_URL}/events/fetch-events')
     
     print("Triggered backend to fetch events:", response.status_code, response.text)
 
