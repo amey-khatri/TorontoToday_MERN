@@ -150,7 +150,7 @@ def main():
     changed = upsert_event_ids(ids)
     print(f"Upserted {len(ids)} IDs (changed {changed}) to {DB_NAME}.{COLL_NAME}")
 
-    response = requests.post('${DATABASE_URL}/events/fetch-events')
+    response = requests.post(f'{DATABASE_URL}/events/fetch-events')
     
     print("Triggered backend to fetch events:", response.status_code, response.text)
 
