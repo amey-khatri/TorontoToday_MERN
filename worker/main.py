@@ -65,9 +65,8 @@ EVENT_ID_RE = re.compile(r"/e/[^/]*-(\d+)(?:/|$)")
 
 session = requests.Session()
 session.headers.update({
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
+    "User-Agent": "Mozilla/5.0 (compatible; EB-Scraper/1.0)",
     "Accept-Language": "en-CA,en;q=0.9",
-
 })
 
 
@@ -122,6 +121,8 @@ def generate_seed_urls():
 def scrape_event_ids():
     all_ids = set()
     pages_crawled = 0
+    
+    data = ""
 
     for url in generate_seed_urls():
         html, final_url = fetch(url)
@@ -130,9 +131,8 @@ def scrape_event_ids():
             # skip if this page failed after retries
             time.sleep(0.2)
             continue
+        data = html
         
-        print(f"HTML content from {final_url} (first 500 chars): {html[:500]}")
-
         ids = extract_event_ids(html, final_url)
         all_ids.update(ids)
 
@@ -141,7 +141,8 @@ def scrape_event_ids():
 
         # Optional early-exit heuristic: stop a seed if a page returns 0 IDs
         # (disabled globally here because we’re interleaving seeds)
-
+        
+    print("Last page HTML snippet:", data)
     print(f"Pages crawled: {pages_crawled}")
     print(f"Unique event IDs found: {len(all_ids)}")
     return sorted(all_ids, key=int)
