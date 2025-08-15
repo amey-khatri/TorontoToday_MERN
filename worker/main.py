@@ -59,7 +59,7 @@ SEED_PATHS = [
     f"/d/{CITY_SLUG}/free--events/?page={{page}}",
 ]
 
-MAX_PAGES_PER_SEED = 10   # tune how deep you want to crawl
+MAX_PAGES_PER_SEED = 5   # tune how deep you want to crawl
 REQUEST_TIMEOUT = 20
 EVENT_ID_RE = re.compile(r"/e/[^/]*-(\d+)(?:/|$)")
 

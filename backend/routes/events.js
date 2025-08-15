@@ -97,7 +97,7 @@ router.post("/fetch-events/", (req, res) => {
         result: null,
         error: err.message || String(err),
       };
-      console.error("fetch-events/async failed:", err);
+      console.error("fetch-events failed:", err);
     }
   });
 });
