@@ -1,0 +1,36 @@
+name: Run Worker Script Once a Day
+
+on:
+  schedule:
+    - cron: "0 6 * * *"  # This is UTC time. 1 AM EST is 6 AM UTC
+  workflow_dispatch: {}  # Allows for manual triggering from the Actions tab
+
+jobs:
+  run-worker:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Checkout the repo
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up Python 3.13 (or whatever version you need)
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        working-directory: worker
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Step 4: Run your Python script (main.py)
+      - name: Run worker script
+        working-directory: worker
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          BACKEND_URL: ${{ secrets.BACKEND_URL }}
+        run: |
+          python main.py
