@@ -30,7 +30,9 @@ jobs:
       - name: Run worker script
         working-directory: worker
         env:
+          MONGO_URI: ${{ secrets.MONGO_URI }}
+          DB_NAME: ${{ secrets.DB_NAME }}
+          COLL_NAME: ${{ secrets.COLL_NAME }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          BACKEND_URL: ${{ secrets.BACKEND_URL }}
         run: |
           python main.py
