@@ -52,14 +52,14 @@ BASE = "https://www.eventbrite.ca"
 # Widen coverage by hitting several stable listing variants
 SEED_PATHS = [
     f"/d/{CITY_SLUG}/all-events/?page={{page}}",
-    # f"/d/{CITY_SLUG}/today/?page={{page}}",
-    # f"/d/{CITY_SLUG}/this-week/?page={{page}}",
-    # f"/d/{CITY_SLUG}/this-weekend/?page={{page}}",
-    # f"/d/{CITY_SLUG}/next-week/?page={{page}}",
-    # f"/d/{CITY_SLUG}/free--events/?page={{page}}",
+    f"/d/{CITY_SLUG}/today/?page={{page}}",
+    f"/d/{CITY_SLUG}/this-week/?page={{page}}",
+    f"/d/{CITY_SLUG}/this-weekend/?page={{page}}",
+    f"/d/{CITY_SLUG}/next-week/?page={{page}}",
+    f"/d/{CITY_SLUG}/free--events/?page={{page}}",
 ]
 
-MAX_PAGES_PER_SEED = 1   # tune how deep you want to crawl
+MAX_PAGES_PER_SEED = 8   # tune how deep you want to crawl
 REQUEST_TIMEOUT = 40
 EVENT_ID_RE = re.compile(r"/e/[^/]*-(\d+)(?:/|$)")
 
