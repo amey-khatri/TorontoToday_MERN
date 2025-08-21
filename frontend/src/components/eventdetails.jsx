@@ -174,7 +174,7 @@ function EventDetailsContent({ event }) {
             <AccessTimeFilled fontSize="medium" />
             <Typography variant="body1" marginLeft={"10px"}>
               {formatDateTime(event?.startTime)} -{" "}
-              {formatDateTime(event?.endTime).split(",")[1]}
+              {formatDateTime(event?.endTime).split(" ").slice(-2)}
             </Typography>
           </ListItem>
           <ListItem>
