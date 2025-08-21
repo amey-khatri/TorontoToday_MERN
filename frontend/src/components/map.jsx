@@ -18,12 +18,11 @@ import {
 import L from "leaflet";
 import Supercluster from "supercluster";
 import "leaflet/dist/leaflet.css";
-import theme from "../theme";
 
 // MUI Global Styles for seamless tooltip
 const tooltipGlobalStyles = (
   <GlobalStyles
-    styles={(theme) => ({
+    styles={{
       ".leaflet-tooltip.mapPopup": {
         background: "transparent !important",
         border: "none !important",
@@ -32,12 +31,12 @@ const tooltipGlobalStyles = (
         margin: "0 !important",
       },
       ".leaflet-tooltip.mapPopup::before": {
-        borderTopColor: `${theme.palette.background.paper} !important`,
+        borderTopColor: "#ffffff !important",
         borderLeftColor: "transparent !important",
         borderRightColor: "transparent !important",
         borderBottomColor: "transparent !important",
       },
-    })}
+    }}
   />
 );
 
@@ -66,58 +65,58 @@ const selectedIcon = new L.Icon({
 
 function CreateCardPopup({ event }) {
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 200,
-      }}
-    >
+    <Box>
       <Card
         sx={{
-          bgcolor: (theme) => theme.palette.background.paper,
-          borderRadius: (theme) => theme.shape.borderRadius,
-          boxShadow: 2,
-          flexGrow: 1,
-          width: 200,
-          height: 150,
+          minWidth: 200,
+          maxWidth: 240,
+          borderRadius: "16px",
+          backgroundColor: "#ffffff",
+          border: "1px solid #e6e6e6",
+          boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+          overflow: "hidden",
+          cursor: "pointer",
+          transition: "all 150ms ease",
+          "&:hover": {
+            transform: "scale(1.02)",
+            boxShadow: "0 12px 32px rgba(0,0,0,0.16)",
+          },
         }}
       >
-        <CardActionArea sx={{ height: "100%" }}>
+        <CardActionArea>
           <CardMedia
             component="img"
             height="120"
-            width="200"
-            src={event.image}
+            image={event.image}
             alt={event.name}
-            sx={{ objectFit: "cover" }}
+            sx={{
+              objectFit: "cover",
+              borderRadius: "16px 16px 0 0",
+            }}
           />
           <CardContent
             sx={{
-              textAlign: "center",
-              paddingX: "10px",
-              paddingY: "8px",
+              padding: "12px",
               margin: "0px",
-              height: 30,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             <Typography
-              variant="caption"
+              variant="body2"
               component="p"
-              fontSize="0.8rem"
-              lineHeight={1.2}
-              fontWeight={theme.typography.fontWeightBold}
               sx={{
+                fontSize: "13px",
+                lineHeight: 1.3,
+                fontWeight: 600,
+                color: "#1f1f1f",
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 display: "-webkit-box",
-                WebkitLineClamp: 3,
+                WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
+                textAlign: "center",
               }}
             >
               {event.name}
@@ -344,7 +343,18 @@ export default function MapComponent({
   return (
     <>
       {tooltipGlobalStyles}
-      <Box flex={3} sx={{ display: { xs: "block" }, bgcolor: "skyblue" }}>
+      <Box 
+        flex={3} 
+        sx={{ 
+          display: { xs: "block" },
+          backgroundColor: "#ffffff",
+          border: "1px solid #e6e6e6",
+          borderRadius: "16px",
+          overflow: "hidden",
+          margin: 1,
+          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+        }}
+      >
         <MapContainer
           center={center}
           zoom={zoom}

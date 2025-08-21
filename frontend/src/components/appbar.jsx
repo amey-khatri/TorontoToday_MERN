@@ -3,12 +3,8 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  TextField,
-  Button,
-  InputAdornment,
   Box,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
 import { styled } from "@mui/material/styles";
 import FiltersButton from "./filters";
 import SearchBar from "./searchbar";
@@ -18,39 +14,19 @@ const StyledToolbar = styled(Toolbar)({
   justifyContent: "space-between",
 });
 
-const FilterButton = styled(Button)(({ theme }) => ({
-  variant: "outlined",
-  display: { sm: "none", md: "flex" },
-  backgroundColor: theme.palette.grey[600],
-  padding: "6px 12px",
-  color: theme.palette.primary.contrastText,
-}));
-
-const SearchField = styled(TextField)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-
-  swidth: "30%",
-
-  // at sm and up, bump it to 50%
-  [theme.breakpoints.up("sm")]: {
-    width: "40%",
-  },
-  "& .MuiInputBase-root": {
-    padding: "0 10px",
-    color: theme.palette.text.primary,
-
-    "& input::placeholder": {
-      color: theme.palette.text.secondary,
-      opacity: 1,
-    },
-  },
-}));
-
 function ToolBarComponent({ events, setFilteredEvents, onMarkerClick }) {
   return (
-    <StyledToolbar>
-      <Typography variant="h5" component="div" marginLeft={1}>
+    <StyledToolbar sx={{ paddingY: 1 }}>
+      <Typography 
+        variant="h5" 
+        component="div" 
+        sx={{ 
+          marginLeft: 1,
+          fontWeight: 600,
+          color: "#1f1f1f",
+          fontSize: "20px"
+        }}
+      >
         TorontoToday
       </Typography>
       <SearchBar events={events} onMarkerClick={onMarkerClick} />
@@ -72,7 +48,9 @@ export default function AppBarComponent({
       position="sticky"
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        bgcolor: (theme) => theme.palette.background.default,
+        backgroundColor: "#ffffff",
+        borderBottom: "1px solid #e6e6e6",
+        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
       }}
     >
       <ToolBarComponent

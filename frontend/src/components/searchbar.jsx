@@ -1,5 +1,6 @@
 import React from "react";
-import { Autocomplete, TextField, Box } from "@mui/material";
+import { Autocomplete, TextField, Box, InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
 
 function getId(e) {
   return e?.eventbriteId ?? e?.id ?? e?.name ?? "";
@@ -44,27 +45,86 @@ export default function SearchBar({
       onInputChange={(_, value) => setInputValue(value)}
       noOptionsText={inputValue ? "No matches" : "Type to search"}
       renderInput={(params) => (
-        <TextField {...params} placeholder={placeholder} variant="outlined" />
+        <TextField 
+          {...params} 
+          placeholder={placeholder} 
+          variant="outlined"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              backgroundColor: "#ffffff",
+              border: "1px solid #e6e6e6",
+              fontSize: "14px",
+              "&:hover": {
+                borderColor: "#d0d0d0",
+              },
+              "&.Mui-focused": {
+                borderColor: "#1f1f1f",
+                boxShadow: "0 0 0 2px rgba(31,31,31,0.1)",
+              },
+              "& fieldset": {
+                border: "none",
+              },
+            },
+            "& .MuiInputBase-input": {
+              padding: "12px 16px",
+              fontSize: "14px",
+              "&::placeholder": {
+                color: "#6e6e6e",
+                opacity: 1,
+              },
+            },
+          }}
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <>
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: "#6e6e6e", fontSize: 20 }} />
+                </InputAdornment>
+                {params.InputProps.startAdornment}
+              </>
+            ),
+          }}
+        />
       )}
       renderOption={(props, option) => (
         <li {...props} key={getId(option)}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box sx={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: 1.5,
+            py: 1
+          }}>
             <Box
               component="img"
               src={option?.image}
               alt={option?.name}
               sx={{
-                width: 32,
-                height: 20,
+                width: 40,
+                height: 28,
                 objectFit: "cover",
-                borderRadius: "4px",
-                bgcolor: "action.hover",
+                borderRadius: "8px",
+                bgcolor: "#f0f0f0",
+                flexShrink: 0,
               }}
               onError={(e) => {
                 e.currentTarget.style.visibility = "hidden";
               }}
             />
-            <Box component="span">{option?.name}</Box>
+            <Box 
+              component="span"
+              sx={{
+                fontSize: "14px",
+                color: "#1f1f1f",
+                fontWeight: 400,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {option?.name}
+            </Box>
           </Box>
         </li>
       )}

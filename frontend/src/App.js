@@ -82,7 +82,11 @@ export default function App() {
 
   return (
     <>
-      <Box height={"100vh"} width={"100vw"}>
+      <Box 
+        height="100vh" 
+        width="100vw"
+        sx={{ backgroundColor: "#f6f6f6" }}
+      >
         <AppBarComponent
           events={events}
           setFilteredEvents={setFilteredEvents}
@@ -96,6 +100,7 @@ export default function App() {
           sx={{
             height: `calc(100vh - 64px)`,
             overflow: "hidden",
+            backgroundColor: "#f6f6f6",
           }}
         >
           <SidebarComponent

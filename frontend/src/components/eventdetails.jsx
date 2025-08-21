@@ -4,7 +4,6 @@ import {
   Drawer,
   IconButton,
   Typography,
-  useTheme,
   List,
   ListItem,
 } from "@mui/material";
@@ -18,14 +17,11 @@ import {
   Groups,
   PermContactCalendar,
 } from "@mui/icons-material";
-import EventCard from "./sidebar";
 
 const DRAWER_WIDTH = 400;
 const IMAGE_HEIGHT = 180; // Fixed height in pixels for the image section
 
 function CloseButton({ onClose }) {
-  const theme = useTheme();
-
   return (
     <Box
       sx={{
@@ -38,15 +34,20 @@ function CloseButton({ onClose }) {
       <IconButton
         onClick={onClose}
         sx={{
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.divider}`,
+          backgroundColor: "#ffffff",
+          border: "1px solid #e6e6e6",
           borderRadius: "50%",
-          width: 30,
-          height: 30,
-          boxShadow: 2,
+          width: 36,
+          height: 36,
+          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+          color: "#1f1f1f",
           "&:hover": {
-            backgroundColor: theme.palette.action.hover,
-            boxShadow: 3,
+            backgroundColor: "#f5f5f5",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.10)",
+          },
+          "&:focus-visible": {
+            outline: "2px solid rgba(31,31,31,0.4)",
+            outlineOffset: 2,
           },
         }}
       >
@@ -57,8 +58,6 @@ function CloseButton({ onClose }) {
 }
 
 function EventImage({ event }) {
-  const theme = useTheme();
-
   return (
     <Box
       sx={{
@@ -95,7 +94,7 @@ function EventImage({ event }) {
           maxWidth: "93%",
           maxHeight: "93%",
           objectFit: "contain",
-          borderRadius: theme.shape.borderRadius,
+          borderRadius: "16px",
           position: "relative",
           zIndex: 1,
         }}
@@ -105,8 +104,6 @@ function EventImage({ event }) {
 }
 
 function EventDetailsContent({ event }) {
-  const theme = useTheme();
-
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString("en-US", {
@@ -205,7 +202,7 @@ function EventDetailsContent({ event }) {
           <ListItem>
             <Paid fontSize="medium" />
             <Typography variant="body1" marginLeft={"10px"}>
-              {event?.price != "0.00" ? `${event.price}` : "Free"}
+              {event?.price !== "0.00" ? `${event.price}` : "Free"}
             </Typography>
           </ListItem>
           <ListItem>
@@ -216,7 +213,7 @@ function EventDetailsContent({ event }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  color: theme.palette.info.main,
+                  color: "#1976d2",
                   fontFamily: "Alegreya Sans",
                 }}
               >
@@ -231,8 +228,6 @@ function EventDetailsContent({ event }) {
 }
 
 export default function EventDetailsComponent({ event, open, onClose }) {
-  const theme = useTheme();
-
   return (
     <Box
       sx={{
@@ -253,14 +248,10 @@ export default function EventDetailsComponent({ event, open, onClose }) {
             height: "100%",
             boxSizing: "border-box",
             overflow: "hidden",
-            transition: theme.transitions.create(["width"], {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
-            borderLeft: `1px solid ${theme.palette.divider}`,
-            backgroundColor: open
-              ? theme.palette.background.paper
-              : "transparent",
+            transition: "width 300ms ease",
+            borderLeft: "1px solid #e6e6e6",
+            backgroundColor: "#ffffff",
+            borderRadius: "0",
           },
         }}
       >

@@ -30,13 +30,21 @@ function EventCard({ event, onEventClick }) {
   };
 
   return (
-    <ListItem sx={{ paddingRight: 0 }}>
+    <ListItem sx={{ paddingRight: 0, paddingY: 0.5 }}>
       <Card
         sx={{
-          bgcolor: (theme) => theme.palette.background.paper,
-          borderRadius: (theme) => theme.shape.borderRadius,
-          boxShadow: 1,
+          bgcolor: "#ffffff",
+          borderRadius: "16px",
+          border: "1px solid #e6e6e6",
+          boxShadow: "none",
           flexGrow: 1,
+          transition: "all 150ms ease",
+          overflow: "hidden",
+          "&:hover": {
+            boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+            transform: "scale(1.01)",
+            borderColor: "rgba(31,31,31,0.08)",
+          },
         }}
       >
         <CardActionArea onClick={() => onEventClick(event)}>
@@ -45,27 +53,99 @@ function EventCard({ event, onEventClick }) {
             height="140"
             src={event.image}
             alt={event.name}
-            sx={{ objectFit: "cover" }}
+            sx={{ 
+              objectFit: "cover",
+              borderRadius: "16px 16px 0 0"
+            }}
           />
-          <CardContent>
-            <Typography variant="h6" fontSize={"1rem"} component="div">
+          <CardContent sx={{ padding: "12px 16px" }}>
+            <Typography 
+              variant="subtitle1" 
+              component="div"
+              sx={{
+                fontWeight: 600,
+                fontSize: "14px",
+                lineHeight: 1.3,
+                color: "#1f1f1f",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                marginBottom: "8px"
+              }}
+            >
               {event.name}
             </Typography>
             <Box
-              component="div"
-              sx={{ display: "inline-flex", alignItems: "center" }}
+              sx={{ 
+                display: "flex", 
+                alignItems: "center",
+                gap: 0.5,
+                marginBottom: "8px"
+              }}
             >
-              <Typography variant="caption" color="text.secondary">
-                <AccessTimeFilledIcon
-                  fontSize="inherit"
-                  sx={{
-                    verticalAlign: "middle",
-                    marginRight: "4px",
-                    fontSize: "0.875rem",
-                  }}
-                />
-                {event.venueName} - {formatDateTime(event.startTime)}
+              <AccessTimeFilledIcon
+                sx={{
+                  fontSize: "14px",
+                  color: "#6e6e6e",
+                }}
+              />
+              <Typography 
+                variant="caption" 
+                sx={{
+                  color: "#6e6e6e",
+                  fontSize: "12px",
+                  lineHeight: 1.3,
+                }}
+              >
+                {formatDateTime(event.startTime)}
               </Typography>
+            </Box>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {event.venueName && (
+                <Box
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    color: "#1f1f1f",
+                    borderRadius: "16px",
+                    padding: "2px 8px",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {event.venueName}
+                </Box>
+              )}
+              {event.price && event.price !== "0.00" && (
+                <Box
+                  sx={{
+                    backgroundColor: event.price === "Sold Out" ? "#ea4335" : "#06c167",
+                    color: "#ffffff",
+                    borderRadius: "16px",
+                    padding: "2px 8px",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {event.price === "0.00" ? "Free" : event.price}
+                </Box>
+              )}
+              {event.category && (
+                <Box
+                  sx={{
+                    backgroundColor: "#f0f0f0",
+                    color: "#1f1f1f",
+                    borderRadius: "16px",
+                    padding: "2px 8px",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {event.category}
+                </Box>
+              )}
             </Box>
           </CardContent>
         </CardActionArea>
@@ -96,12 +176,27 @@ export default function SidebarComponent({
         }}
       >
         <Box
-          sx={{ p: 2, textAlign: "center", alignContent: "center" }}
+          sx={{ 
+            p: 2, 
+            textAlign: "center", 
+            alignContent: "center",
+            backgroundColor: "#f6f6f6",
+            border: "1px solid #e6e6e6",
+            borderRadius: "16px",
+            margin: 2
+          }}
           height="100%"
           width="100%"
-          bgcolor={theme.palette.background.paper}
         >
-          <Typography variant="h6">No Events Found</Typography>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              color: "#1f1f1f", 
+              fontWeight: 600 
+            }}
+          >
+            No Events Found
+          </Typography>
         </Box>
       </Box>
     );
@@ -132,11 +227,9 @@ export default function SidebarComponent({
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
             }),
-            scrollbarColor: `${theme.palette.text.secondary} ${theme.palette.background.paper}`,
-            scrollbarWidth: "auto",
-            backgroundColor: open
-              ? theme.palette.background.paper
-              : "transparent",
+            backgroundColor: "#f6f6f6",
+            border: "none",
+            borderRight: open ? "1px solid #e6e6e6" : "none",
           },
         }}
       >
@@ -195,7 +288,7 @@ function ScrollableEventList({ events, open, drawerWidth, onEventClick }) {
         visibility: open ? "visible" : "hidden",
       }}
     >
-      <List sx={{ p: 0, m: 0 }}>
+      <List sx={{ p: 1, m: 0 }}>
         {visible.map((event, idx) => (
           <EventCard
             key={event.eventbriteId ?? event.id ?? idx}
@@ -252,15 +345,20 @@ function ToggleSidebarButton({ open, onToggle, DRAWER_WIDTH }) {
       <IconButton
         onClick={onToggle}
         sx={{
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.divider}`,
-          borderRadius: "20%",
-          width: 22,
-          height: 50,
-          boxShadow: 2,
+          backgroundColor: "#ffffff",
+          border: "1px solid #e6e6e6",
+          borderRadius: "12px",
+          width: 32,
+          height: 48,
+          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+          color: "#1f1f1f",
           "&:hover": {
-            backgroundColor: theme.palette.custom.hover,
-            boxShadow: 3,
+            backgroundColor: "#f5f5f5",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.10)",
+          },
+          "&:focus-visible": {
+            outline: "2px solid rgba(31,31,31,0.4)",
+            outlineOffset: 2,
           },
         }}
       >
