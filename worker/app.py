@@ -2,35 +2,24 @@ import os
 import sys
 import threading
 import subprocess
-from flask import Flask, jsonify
+from flask import Flask
 
 app = Flask(__name__)
 
-
 def run_task_background():
-    """Run main.py in a background process and display logs."""
     try:
-        subprocess.run(
-            [sys.executable, "main.py"],
-            check=True,
-            stdout=sys.stdout,  # Redirect stdout to the terminal
-            stderr=sys.stderr   # Redirect stderr to the terminal
-        )
-    except Exception as e:
-        print(f"Error running main.py: {e}", file=sys.stderr)
+        subprocess.run([sys.executable, "main.py"], check=True)
+    except Exception:
+        pass  # no logs
 
-
-@app.get("/health")
+@app.route("/health", methods=["GET", "HEAD"])
 def health():
-    return jsonify({"ok": True})
+    return ("", 204)
 
-
-@app.post("/run-task")
+@app.route("/run-task", methods=["POST"])
 def run_task():
-    # Fire-and-forget run of the Python script, no logging, no auth
     threading.Thread(target=run_task_background, daemon=True).start()
-    return jsonify({"queued": True})
-
+    return ("", 204)
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", "8000"))
