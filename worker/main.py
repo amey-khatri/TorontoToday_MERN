@@ -142,7 +142,6 @@ def scrape_event_ids():
         # Optional early-exit heuristic: stop a seed if a page returns 0 IDs
         # (disabled globally here because we’re interleaving seeds)
         
-    print("Last page HTML snippet:", data)
     print(f"Pages crawled: {pages_crawled}")
     print(f"Unique event IDs found: {len(all_ids)}")
     return sorted(all_ids, key=int)
@@ -157,7 +156,6 @@ def main():
     response = requests.post(f'{DATABASE_URL}/events/fetch-events')
     
     print("Triggered backend to fetch events:", response.status_code, response.text)
-
 
 
 if __name__ == "__main__":
