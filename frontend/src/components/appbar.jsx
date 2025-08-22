@@ -3,6 +3,7 @@ import { AppBar, Toolbar, Typography, Box } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import FiltersButton from "./filters";
 import SearchBar from "./searchbar";
+import TTLogo from "../images/TTLogo_Pin.png";
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
@@ -13,22 +14,52 @@ function ToolBarComponent({ events, setFilteredEvents, onMarkerClick }) {
   const theme = useTheme();
 
   return (
-    <StyledToolbar sx={{ paddingY: 1 }}>
-      <Typography
-        variant="h5"
-        component="div"
+    <StyledToolbar sx={{ paddingY: 1, position: "relative" }}>
+      {/* Left side - Logo and Title */}
+      <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
+        <img
+          src={TTLogo}
+          alt="TOToday Logo"
+          style={{ height: 48, overflow: "hidden" }}
+        />
+        <Typography
+          variant="h5"
+          component="div"
+          sx={{
+            marginLeft: 0,
+            fontWeight: 700,
+            color: theme.palette.text.primary,
+            fontSize: "20px",
+            paddingLeft: "12px",
+          }}
+        >
+          TorontoToday
+        </Typography>
+      </Box>
+
+      {/* Center - Search Bar (absolutely positioned to stay centered) */}
+      <Box
         sx={{
-          marginLeft: 1,
-          fontWeight: 600,
-          color: theme.palette.text.primary,
-          fontSize: "20px",
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "400px", // Fixed width
+          maxWidth: "40vw", // Responsive but maintains proportion
         }}
       >
-        TorontoToday
-      </Typography>
-      <SearchBar events={events} onMarkerClick={onMarkerClick} />
+        <SearchBar events={events} onMarkerClick={onMarkerClick} />
+      </Box>
 
-      <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 1 }}>
+      {/* Right side - Filters */}
+      <Box
+        sx={{
+          display: { xs: "none", sm: "flex" },
+          gap: 1,
+          flex: 1,
+          justifyContent: "flex-end",
+        }}
+      >
         <FiltersButton events={events} setFilteredEvents={setFilteredEvents} />
       </Box>
     </StyledToolbar>
@@ -50,6 +81,7 @@ export default function AppBarComponent({
         backgroundColor: theme.palette.background.paper,
         borderBottom: `1px solid ${theme.palette.divider}`,
         boxShadow: theme.shadows[1],
+        borderRadius: "0 0 16px 16px",
       }}
     >
       <ToolBarComponent

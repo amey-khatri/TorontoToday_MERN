@@ -13,11 +13,18 @@ const ubereatsEventsTheme = createTheme({
       secondary: "#de9a36ff",
       contrastText: "#ffffff",
     },
+    veera: {
+      orange: "#ffA85c",
+      darkblue: "#131269",
+      lightblue: "#10749d",
+      offwhite: "#fffaf5ff",
+    },
     marker: {
       cluster: "#0091ffb9",
+      orange: "#CB8427",
     },
     background: {
-      default: "#f6f6f6",
+      default: "#f6f6f6ff",
       paper: "#ffffff",
     },
     text: {

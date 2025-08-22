@@ -10,7 +10,6 @@ import {
   ListItem,
   List,
   IconButton,
-  GlobalStyles,
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -311,31 +310,6 @@ function ScrollableEventList({ events, open, drawerWidth, onEventClick }) {
         ))}
       </List>
     </Box>
-  );
-}
-
-function CustomScrollbarStyles() {
-  const theme = useTheme();
-  return (
-    <GlobalStyles
-      styles={{
-        "*": {
-          scrollbarWidth: "thin",
-          scrollbarColor: `${theme.palette.text.secondary} ${theme.palette.background.paper}`,
-        },
-        "*::-webkit-scrollbar": { width: "8px", height: "8px" },
-        "*::-webkit-scrollbar-track": {
-          background: theme.palette.background.paper,
-        },
-        "*::-webkit-scrollbar-thumb": {
-          backgroundColor: theme.palette.action.hover,
-          borderRadius: "4px",
-        },
-        "*::-webkit-scrollbar-thumb:hover": {
-          backgroundColor: theme.palette.action.hover,
-        },
-      }}
-    />
   );
 }
 

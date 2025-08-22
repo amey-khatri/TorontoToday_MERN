@@ -75,13 +75,18 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
       ).sort(),
     [events]
   );
-  const formats = React.useMemo(
-    () =>
-      Array.from(
-        new Set((events || []).map((e) => e?.format).filter(Boolean))
-      ).sort(),
-    [events]
-  );
+  const formats = React.useMemo(() => {
+    const formatSet = Array.from(
+      new Set((events || []).map((e) => e?.format).filter(Boolean))
+    );
+
+    // Sort with "Other" always at the end
+    return formatSet.sort((a, b) => {
+      if (a.toLowerCase() === "other") return 1;
+      if (b.toLowerCase() === "other") return -1;
+      return a.localeCompare(b);
+    });
+  }, [events]);
 
   const [filters, setFilters] = React.useState(defaultFilters);
 
@@ -120,7 +125,7 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
           fontWeight: 500,
           fontSize: "14px",
           padding: "8px 16px",
-          backgroundColor: theme.palette.grey[100],
+          backgroundColor: theme.palette.grey[10],
           color: theme.palette.text.primary,
           border: `1px solid ${theme.palette.divider}`,
           transition: `all ${theme.transitions.duration.shortest}ms ${theme.transitions.easing.easeOut}`,
@@ -165,6 +170,7 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
             border: `1px solid ${theme.palette.divider}`,
             boxShadow: theme.shadows[3],
             marginTop: "8px",
+            backgroundColor: theme.palette.background.paper,
           },
         }}
       >
@@ -283,7 +289,7 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
                     }}
                   />
                 )}
-                renderTags={(value, getTagProps) =>
+                renderValue={(value, getTagProps) =>
                   value.map((option, index) => (
                     <Chip
                       {...getTagProps({ index })}
@@ -447,6 +453,9 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
                     "& .MuiInputLabel-root": {
                       color: "#6e6e6e",
                       fontSize: "14px",
+                      backgroundColor: "#ffffff",
+                      paddingX: "4px",
+                      mt: "2px",
                       "&.Mui-focused": {
                         color: "#1f1f1f",
                       },
@@ -483,6 +492,9 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
                     "& .MuiInputLabel-root": {
                       color: "#6e6e6e",
                       fontSize: "14px",
+                      backgroundColor: "#ffffff",
+                      paddingX: "4px",
+                      mt: "2px",
                       "&.Mui-focused": {
                         color: "#1f1f1f",
                       },

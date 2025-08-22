@@ -56,7 +56,7 @@ const defaultIcon = new L.Icon({
 
 const selectedIcon = new L.Icon({
   iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png",
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
   iconSize: [25 * scaleFactor, 41 * scaleFactor], // 40% larger
   iconAnchor: [12 * scaleFactor, 41 * scaleFactor], // Adjusted anchor point
