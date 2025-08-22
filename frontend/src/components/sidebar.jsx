@@ -31,6 +31,16 @@ function EventCard({ event, onEventClick }) {
     });
   };
 
+  const priceColor = (event) => {
+    if (event.price === "0.00") {
+      return theme.palette.success.main;
+    } else if (event.price === "Sold Out") {
+      return theme.palette.error.main;
+    } else {
+      return theme.palette.secondary.secondary;
+    }
+  };
+
   return (
     <ListItem sx={{ paddingRight: 0, paddingY: 0.5 }}>
       <Card
@@ -121,24 +131,19 @@ function EventCard({ event, onEventClick }) {
                   {event.venueName}
                 </Box>
               )}
-              {event.price && event.price !== "0.00" && (
-                <Box
-                  sx={{
-                    backgroundColor:
-                      event.price === "Sold Out"
-                        ? theme.palette.error.main
-                        : theme.palette.success.main,
-                    color: theme.palette.common.white,
-                    borderRadius: "16px",
-                    padding: "2px 8px",
-                    fontSize: "11px",
-                    fontWeight: 600,
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {event.price === "0.00" ? "Free" : event.price}
-                </Box>
-              )}
+              <Box
+                sx={{
+                  backgroundColor: priceColor(event),
+                  color: theme.palette.common.white,
+                  borderRadius: "16px",
+                  padding: "2px 8px",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  lineHeight: 1.2,
+                }}
+              >
+                {event.price === "0.00" ? "Free" : event.price}
+              </Box>
               {event.category && (
                 <Box
                   sx={{
