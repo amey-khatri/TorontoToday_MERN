@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -304,8 +304,6 @@ function ClustersLayer({ events = [], onMarkerClick, selectedEvent, theme }) {
 }
 
 function ClickableMarker({ event, position, onMarkerClick, isSelected }) {
-  const map = useMap();
-
   const handleClick = () => {
     onMarkerClick(event);
   };
@@ -341,8 +339,6 @@ export default function MapComponent({
   const theme = useTheme();
   const center = [43.6532, -79.3832];
   const zoom = 12;
-
-  const [isSelected, setIsSelected] = useState(false);
 
   return (
     <>
