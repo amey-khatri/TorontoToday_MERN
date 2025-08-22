@@ -1,61 +1,65 @@
 import React from "react";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  TextField,
-  Button,
-  InputAdornment,
-  Box,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import { styled } from "@mui/material/styles";
+import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { styled, useTheme } from "@mui/material/styles";
 import FiltersButton from "./filters";
 import SearchBar from "./searchbar";
+import TTLogo from "../images/TTLogo_Pin.png";
 
 const StyledToolbar = styled(Toolbar)({
   display: "flex",
   justifyContent: "space-between",
 });
 
-const FilterButton = styled(Button)(({ theme }) => ({
-  variant: "outlined",
-  display: { sm: "none", md: "flex" },
-  backgroundColor: theme.palette.grey[600],
-  padding: "6px 12px",
-  color: theme.palette.primary.contrastText,
-}));
-
-const SearchField = styled(TextField)(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-
-  swidth: "30%",
-
-  // at sm and up, bump it to 50%
-  [theme.breakpoints.up("sm")]: {
-    width: "40%",
-  },
-  "& .MuiInputBase-root": {
-    padding: "0 10px",
-    color: theme.palette.text.primary,
-
-    "& input::placeholder": {
-      color: theme.palette.text.secondary,
-      opacity: 1,
-    },
-  },
-}));
-
 function ToolBarComponent({ events, setFilteredEvents, onMarkerClick }) {
-  return (
-    <StyledToolbar>
-      <Typography variant="h5" component="div" marginLeft={1}>
-        TorontoToday
-      </Typography>
-      <SearchBar events={events} onMarkerClick={onMarkerClick} />
+  const theme = useTheme();
 
-      <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 1 }}>
+  return (
+    <StyledToolbar sx={{ paddingY: 1, position: "relative" }}>
+      {/* Left side - Logo and Title */}
+      <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
+        <img
+          src={TTLogo}
+          alt="TOToday Logo"
+          style={{ height: 48, overflow: "hidden" }}
+        />
+        <Typography
+          variant="h5"
+          component="div"
+          sx={{
+            marginLeft: 0,
+            fontWeight: 700,
+            color: theme.palette.text.primary,
+            fontSize: "20px",
+            paddingLeft: "12px",
+          }}
+        >
+          TorontoToday
+        </Typography>
+      </Box>
+
+      {/* Center - Search Bar (absolutely positioned to stay centered) */}
+      <Box
+        sx={{
+          position: "absolute",
+          left: "50%",
+          top: "50%",
+          transform: "translate(-50%, -50%)",
+          width: "400px", // Fixed width
+          maxWidth: "40vw", // Responsive but maintains proportion
+        }}
+      >
+        <SearchBar events={events} onMarkerClick={onMarkerClick} />
+      </Box>
+
+      {/* Right side - Filters */}
+      <Box
+        sx={{
+          display: { xs: "none", sm: "flex" },
+          gap: 1,
+          flex: 1,
+          justifyContent: "flex-end",
+        }}
+      >
         <FiltersButton events={events} setFilteredEvents={setFilteredEvents} />
       </Box>
     </StyledToolbar>
@@ -67,12 +71,17 @@ export default function AppBarComponent({
   setFilteredEvents,
   onMarkerClick,
 }) {
+  const theme = useTheme();
+
   return (
     <AppBar
       position="sticky"
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        bgcolor: (theme) => theme.palette.background.default,
+        backgroundColor: theme.palette.background.paper,
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        boxShadow: theme.shadows[1],
+        borderRadius: "0 0 16px 16px",
       }}
     >
       <ToolBarComponent

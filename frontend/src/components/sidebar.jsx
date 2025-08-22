@@ -10,7 +10,6 @@ import {
   ListItem,
   List,
   IconButton,
-  GlobalStyles,
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -18,6 +17,8 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTheme } from "@mui/material/styles";
 
 function EventCard({ event, onEventClick }) {
+  const theme = useTheme();
+
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString("en-US", {
@@ -29,14 +30,35 @@ function EventCard({ event, onEventClick }) {
     });
   };
 
+  const priceColor = (event) => {
+    if (event.price === "0.00") {
+      return theme.palette.success.main;
+    } else if (event.price === "Sold Out") {
+      return theme.palette.error.main;
+    } else {
+      return theme.palette.secondary.secondary;
+    }
+  };
+
   return (
-    <ListItem sx={{ paddingRight: 0 }}>
+    <ListItem sx={{ paddingRight: 0, paddingY: 0.5 }}>
       <Card
         sx={{
-          bgcolor: (theme) => theme.palette.background.paper,
-          borderRadius: (theme) => theme.shape.borderRadius,
-          boxShadow: 1,
+          bgcolor: theme.palette.background.paper,
+          borderRadius: theme.shape.borderRadius + "px",
+          border: `1px solid ${theme.palette.divider}`,
+          boxShadow: "none",
           flexGrow: 1,
+          transition: `all ${theme.transitions.duration.shortest}ms ${theme.transitions.easing.easeOut}`,
+          overflow: "hidden",
+          "&:hover": {
+            boxShadow: theme.shadows[1],
+            transform: "scale(1.01)",
+            borderColor: `rgba(${theme.palette.primary.main.replace(
+              "#",
+              ""
+            )}, 0.08)`,
+          },
         }}
       >
         <CardActionArea onClick={() => onEventClick(event)}>
@@ -45,27 +67,97 @@ function EventCard({ event, onEventClick }) {
             height="140"
             src={event.image}
             alt={event.name}
-            sx={{ objectFit: "cover" }}
+            sx={{
+              objectFit: "cover",
+              borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+            }}
           />
-          <CardContent>
-            <Typography variant="h6" fontSize={"1rem"} component="div">
+          <CardContent sx={{ padding: "12px 16px" }}>
+            <Typography
+              variant="subtitle1"
+              component="div"
+              sx={{
+                fontWeight: 600,
+                fontSize: "14px",
+                lineHeight: 1.3,
+                color: theme.palette.text.primary,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+                marginBottom: "8px",
+              }}
+            >
               {event.name}
             </Typography>
             <Box
-              component="div"
-              sx={{ display: "inline-flex", alignItems: "center" }}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+                marginBottom: "8px",
+              }}
             >
-              <Typography variant="caption" color="text.secondary">
-                <AccessTimeFilledIcon
-                  fontSize="inherit"
-                  sx={{
-                    verticalAlign: "middle",
-                    marginRight: "4px",
-                    fontSize: "0.875rem",
-                  }}
-                />
-                {event.venueName} - {formatDateTime(event.startTime)}
+              <AccessTimeFilledIcon
+                sx={{
+                  fontSize: "14px",
+                  color: theme.palette.text.secondary,
+                }}
+              />
+              <Typography
+                variant="caption"
+                sx={{
+                  color: theme.palette.text.secondary,
+                  fontSize: "12px",
+                  lineHeight: 1.3,
+                }}
+              >
+                {formatDateTime(event.startTime)}
               </Typography>
+            </Box>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
+              {event.venueName && (
+                <Box
+                  sx={{
+                    backgroundColor: theme.palette.grey[100],
+                    color: theme.palette.text.primary,
+                    borderRadius: "16px",
+                    padding: "2px 8px",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {event.venueName}
+                </Box>
+              )}
+              <Box
+                sx={{
+                  backgroundColor: priceColor(event),
+                  color: theme.palette.common.white,
+                  borderRadius: "16px",
+                  padding: "2px 8px",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  lineHeight: 1.2,
+                }}
+              >
+                {event.price === "0.00" ? "Free" : event.price}
+              </Box>
+              {event.category && (
+                <Box
+                  sx={{
+                    backgroundColor: theme.palette.grey[100],
+                    color: theme.palette.text.primary,
+                    borderRadius: "16px",
+                    padding: "2px 8px",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {event.category}
+                </Box>
+              )}
             </Box>
           </CardContent>
         </CardActionArea>
@@ -96,12 +188,27 @@ export default function SidebarComponent({
         }}
       >
         <Box
-          sx={{ p: 2, textAlign: "center", alignContent: "center" }}
+          sx={{
+            p: 2,
+            textAlign: "center",
+            alignContent: "center",
+            backgroundColor: theme.palette.background.default,
+            border: `1px solid ${theme.palette.divider}`,
+            borderRadius: theme.shape.borderRadius + "px",
+            margin: 2,
+          }}
           height="100%"
           width="100%"
-          bgcolor={theme.palette.background.paper}
         >
-          <Typography variant="h6">No Events Found</Typography>
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.palette.text.primary,
+              fontWeight: 600,
+            }}
+          >
+            No Events Found
+          </Typography>
         </Box>
       </Box>
     );
@@ -132,11 +239,9 @@ export default function SidebarComponent({
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
             }),
-            scrollbarColor: `${theme.palette.text.secondary} ${theme.palette.background.paper}`,
-            scrollbarWidth: "auto",
-            backgroundColor: open
-              ? theme.palette.background.paper
-              : "transparent",
+            backgroundColor: theme.palette.background.default,
+            border: "none",
+            borderRight: open ? `1px solid ${theme.palette.divider}` : "none",
           },
         }}
       >
@@ -195,7 +300,7 @@ function ScrollableEventList({ events, open, drawerWidth, onEventClick }) {
         visibility: open ? "visible" : "hidden",
       }}
     >
-      <List sx={{ p: 0, m: 0 }}>
+      <List sx={{ p: 1, m: 0 }}>
         {visible.map((event, idx) => (
           <EventCard
             key={event.eventbriteId ?? event.id ?? idx}
@@ -205,31 +310,6 @@ function ScrollableEventList({ events, open, drawerWidth, onEventClick }) {
         ))}
       </List>
     </Box>
-  );
-}
-
-function CustomScrollbarStyles() {
-  const theme = useTheme();
-  return (
-    <GlobalStyles
-      styles={{
-        "*": {
-          scrollbarWidth: "thin",
-          scrollbarColor: `${theme.palette.text.secondary} ${theme.palette.background.paper}`,
-        },
-        "*::-webkit-scrollbar": { width: "8px", height: "8px" },
-        "*::-webkit-scrollbar-track": {
-          background: theme.palette.background.paper,
-        },
-        "*::-webkit-scrollbar-thumb": {
-          backgroundColor: theme.palette.action.hover,
-          borderRadius: "4px",
-        },
-        "*::-webkit-scrollbar-thumb:hover": {
-          backgroundColor: theme.palette.action.hover,
-        },
-      }}
-    />
   );
 }
 
@@ -254,13 +334,18 @@ function ToggleSidebarButton({ open, onToggle, DRAWER_WIDTH }) {
         sx={{
           backgroundColor: theme.palette.background.paper,
           border: `1px solid ${theme.palette.divider}`,
-          borderRadius: "20%",
-          width: 22,
-          height: 50,
-          boxShadow: 2,
+          borderRadius: "12px",
+          width: 32,
+          height: 48,
+          boxShadow: theme.shadows[1],
+          color: theme.palette.text.primary,
           "&:hover": {
-            backgroundColor: theme.palette.custom.hover,
-            boxShadow: 3,
+            backgroundColor: theme.palette.action.hover,
+            boxShadow: theme.shadows[2],
+          },
+          "&:focus-visible": {
+            outline: `2px solid ${theme.palette.primary.main}`,
+            outlineOffset: 2,
           },
         }}
       >

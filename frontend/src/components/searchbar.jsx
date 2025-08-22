@@ -1,5 +1,7 @@
 import React from "react";
-import { Autocomplete, TextField, Box } from "@mui/material";
+import { Autocomplete, TextField, Box, InputAdornment } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search";
+import { useTheme } from "@mui/material/styles";
 
 function getId(e) {
   return e?.eventbriteId ?? e?.id ?? e?.name ?? "";
@@ -11,6 +13,7 @@ export default function SearchBar({
   placeholder = "Search events...",
   sx,
 }) {
+  const theme = useTheme();
   const [inputValue, setInputValue] = React.useState("");
 
   const options = React.useMemo(() => {
@@ -44,27 +47,90 @@ export default function SearchBar({
       onInputChange={(_, value) => setInputValue(value)}
       noOptionsText={inputValue ? "No matches" : "Type to search"}
       renderInput={(params) => (
-        <TextField {...params} placeholder={placeholder} variant="outlined" />
+        <TextField
+          {...params}
+          placeholder={placeholder}
+          variant="outlined"
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              borderRadius: "12px",
+              backgroundColor: theme.palette.background.paper,
+              border: `1px solid ${theme.palette.divider}`,
+              fontSize: "14px",
+              "&:hover": {
+                borderColor: theme.palette.grey[400],
+              },
+              "&.Mui-focused": {
+                borderColor: theme.palette.primary.main,
+                boxShadow: `0 0 0 2px ${theme.palette.primary.main}26`, // 26 = 15% opacity in hex
+              },
+              "& fieldset": {
+                border: "none",
+              },
+            },
+            "& .MuiInputBase-input": {
+              padding: "12px 16px",
+              fontSize: "14px",
+              "&::placeholder": {
+                color: theme.palette.text.secondary,
+                opacity: 1,
+              },
+            },
+          }}
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <>
+                <InputAdornment position="start">
+                  <SearchIcon
+                    sx={{ color: theme.palette.text.secondary, fontSize: 20 }}
+                  />
+                </InputAdornment>
+                {params.InputProps.startAdornment}
+              </>
+            ),
+          }}
+        />
       )}
       renderOption={(props, option) => (
         <li {...props} key={getId(option)}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              py: 1,
+            }}
+          >
             <Box
               component="img"
               src={option?.image}
               alt={option?.name}
               sx={{
-                width: 32,
-                height: 20,
+                width: 40,
+                height: 28,
                 objectFit: "cover",
-                borderRadius: "4px",
-                bgcolor: "action.hover",
+                borderRadius: "8px",
+                bgcolor: theme.palette.action.hover,
+                flexShrink: 0,
               }}
               onError={(e) => {
                 e.currentTarget.style.visibility = "hidden";
               }}
             />
-            <Box component="span">{option?.name}</Box>
+            <Box
+              component="span"
+              sx={{
+                fontSize: "14px",
+                color: theme.palette.text.primary,
+                fontWeight: 400,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {option?.name}
+            </Box>
           </Box>
         </li>
       )}

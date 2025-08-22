@@ -18,12 +18,12 @@ import {
 import L from "leaflet";
 import Supercluster from "supercluster";
 import "leaflet/dist/leaflet.css";
-import theme from "../theme";
+import { useTheme } from "@mui/material/styles";
 
 // MUI Global Styles for seamless tooltip
-const tooltipGlobalStyles = (
+const getTooltipGlobalStyles = (theme) => (
   <GlobalStyles
-    styles={(theme) => ({
+    styles={{
       ".leaflet-tooltip.mapPopup": {
         background: "transparent !important",
         border: "none !important",
@@ -37,7 +37,7 @@ const tooltipGlobalStyles = (
         borderRightColor: "transparent !important",
         borderBottomColor: "transparent !important",
       },
-    })}
+    }}
   />
 );
 
@@ -56,7 +56,7 @@ const defaultIcon = new L.Icon({
 
 const selectedIcon = new L.Icon({
   iconUrl:
-    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png",
+    "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png",
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
   iconSize: [25 * scaleFactor, 41 * scaleFactor], // 40% larger
   iconAnchor: [12 * scaleFactor, 41 * scaleFactor], // Adjusted anchor point
@@ -65,59 +65,61 @@ const selectedIcon = new L.Icon({
 });
 
 function CreateCardPopup({ event }) {
+  const theme = useTheme();
+
   return (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        width: 200,
-      }}
-    >
+    <Box>
       <Card
         sx={{
-          bgcolor: (theme) => theme.palette.background.paper,
-          borderRadius: (theme) => theme.shape.borderRadius,
-          boxShadow: 2,
-          flexGrow: 1,
-          width: 200,
-          height: 150,
+          minWidth: 200,
+          maxWidth: 240,
+          borderRadius: theme.shape.borderRadius + "px",
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
+          boxShadow: theme.shadows[3],
+          overflow: "hidden",
+          cursor: "pointer",
+          transition: `all ${theme.transitions.duration.shortest}ms ${theme.transitions.easing.easeOut}`,
+          "&:hover": {
+            transform: "scale(1.02)",
+            boxShadow: theme.shadows[4],
+          },
         }}
       >
-        <CardActionArea sx={{ height: "100%" }}>
+        <CardActionArea>
           <CardMedia
             component="img"
             height="120"
-            width="200"
-            src={event.image}
+            image={event.image}
             alt={event.name}
-            sx={{ objectFit: "cover" }}
+            sx={{
+              objectFit: "cover",
+              borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
+            }}
           />
           <CardContent
             sx={{
-              textAlign: "center",
-              paddingX: "10px",
-              paddingY: "8px",
+              padding: "12px",
               margin: "0px",
-              height: 30,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
             }}
           >
             <Typography
-              variant="caption"
+              variant="body2"
               component="p"
-              fontSize="0.8rem"
-              lineHeight={1.2}
-              fontWeight={theme.typography.fontWeightBold}
               sx={{
+                fontSize: "13px",
+                lineHeight: 1.3,
+                fontWeight: 600,
+                color: theme.palette.text.primary,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 display: "-webkit-box",
-                WebkitLineClamp: 3,
+                WebkitLineClamp: 2,
                 WebkitBoxOrient: "vertical",
+                textAlign: "center",
               }}
             >
               {event.name}
@@ -183,7 +185,7 @@ function MapEventFocusHandler({ selectedEvent }) {
 }
 
 // Clustered markers layer
-function ClustersLayer({ events = [], onMarkerClick, selectedEvent }) {
+function ClustersLayer({ events = [], onMarkerClick, selectedEvent, theme }) {
   const map = useMap();
   const [clusters, setClusters] = React.useState([]);
 
@@ -238,15 +240,15 @@ function ClustersLayer({ events = [], onMarkerClick, selectedEvent }) {
     const size = count < 10 ? 30 : count < 100 ? 36 : 44;
     return L.divIcon({
       html: `<div style="
-        background:#2A81CBbb;
-        color:#fff;
+        background:${theme.palette.marker.cluster};
+        color:${theme.palette.primary.contrastText};
         border-radius:50%;
         display:flex;
         align-items:center;
         justify-content:center;
         width:${size}px;
         height:${size}px;
-        box-shadow:0 2px 6px rgba(0,0,0,0.2);
+        box-shadow:${theme.shadows[2]};
         font-weight:600;
         font-family:inherit;
       ">${count}</div>`,
@@ -336,6 +338,7 @@ export default function MapComponent({
   onMarkerClick,
   selectedEvent,
 }) {
+  const theme = useTheme();
   const center = [43.6532, -79.3832];
   const zoom = 12;
 
@@ -343,8 +346,19 @@ export default function MapComponent({
 
   return (
     <>
-      {tooltipGlobalStyles}
-      <Box flex={3} sx={{ display: { xs: "block" }, bgcolor: "skyblue" }}>
+      {getTooltipGlobalStyles(theme)}
+      <Box
+        flex={3}
+        sx={{
+          display: { xs: "block" },
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: theme.shape.borderRadius + "px",
+          overflow: "hidden",
+          margin: 1,
+          boxShadow: theme.shadows[1],
+        }}
+      >
         <MapContainer
           center={center}
           zoom={zoom}
@@ -362,6 +376,7 @@ export default function MapComponent({
             events={events}
             onMarkerClick={onMarkerClick}
             selectedEvent={selectedEvent}
+            theme={theme}
           />
         </MapContainer>
       </Box>
