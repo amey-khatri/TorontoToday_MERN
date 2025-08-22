@@ -18,9 +18,10 @@ import {
 import L from "leaflet";
 import Supercluster from "supercluster";
 import "leaflet/dist/leaflet.css";
+import { useTheme } from "@mui/material/styles";
 
 // MUI Global Styles for seamless tooltip
-const tooltipGlobalStyles = (
+const getTooltipGlobalStyles = (theme) => (
   <GlobalStyles
     styles={{
       ".leaflet-tooltip.mapPopup": {
@@ -31,7 +32,7 @@ const tooltipGlobalStyles = (
         margin: "0 !important",
       },
       ".leaflet-tooltip.mapPopup::before": {
-        borderTopColor: "#ffffff !important",
+        borderTopColor: `${theme.palette.background.paper} !important`,
         borderLeftColor: "transparent !important",
         borderRightColor: "transparent !important",
         borderBottomColor: "transparent !important",
@@ -64,22 +65,24 @@ const selectedIcon = new L.Icon({
 });
 
 function CreateCardPopup({ event }) {
+  const theme = useTheme();
+
   return (
     <Box>
       <Card
         sx={{
           minWidth: 200,
           maxWidth: 240,
-          borderRadius: "16px",
-          backgroundColor: "#ffffff",
-          border: "1px solid #e6e6e6",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+          borderRadius: theme.shape.borderRadius + "px",
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
+          boxShadow: theme.shadows[3],
           overflow: "hidden",
           cursor: "pointer",
-          transition: "all 150ms ease",
+          transition: `all ${theme.transitions.duration.shortest}ms ${theme.transitions.easing.easeOut}`,
           "&:hover": {
             transform: "scale(1.02)",
-            boxShadow: "0 12px 32px rgba(0,0,0,0.16)",
+            boxShadow: theme.shadows[4],
           },
         }}
       >
@@ -91,7 +94,7 @@ function CreateCardPopup({ event }) {
             alt={event.name}
             sx={{
               objectFit: "cover",
-              borderRadius: "16px 16px 0 0",
+              borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
             }}
           />
           <CardContent
@@ -110,7 +113,7 @@ function CreateCardPopup({ event }) {
                 fontSize: "13px",
                 lineHeight: 1.3,
                 fontWeight: 600,
-                color: "#1f1f1f",
+                color: theme.palette.text.primary,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 display: "-webkit-box",
@@ -182,7 +185,7 @@ function MapEventFocusHandler({ selectedEvent }) {
 }
 
 // Clustered markers layer
-function ClustersLayer({ events = [], onMarkerClick, selectedEvent }) {
+function ClustersLayer({ events = [], onMarkerClick, selectedEvent, theme }) {
   const map = useMap();
   const [clusters, setClusters] = React.useState([]);
 
@@ -237,15 +240,15 @@ function ClustersLayer({ events = [], onMarkerClick, selectedEvent }) {
     const size = count < 10 ? 30 : count < 100 ? 36 : 44;
     return L.divIcon({
       html: `<div style="
-        background:#2A81CBbb;
-        color:#fff;
+        background:${theme.palette.marker.cluster};
+        color:${theme.palette.primary.contrastText};
         border-radius:50%;
         display:flex;
         align-items:center;
         justify-content:center;
         width:${size}px;
         height:${size}px;
-        box-shadow:0 2px 6px rgba(0,0,0,0.2);
+        box-shadow:${theme.shadows[2]};
         font-weight:600;
         font-family:inherit;
       ">${count}</div>`,
@@ -335,6 +338,7 @@ export default function MapComponent({
   onMarkerClick,
   selectedEvent,
 }) {
+  const theme = useTheme();
   const center = [43.6532, -79.3832];
   const zoom = 12;
 
@@ -342,17 +346,17 @@ export default function MapComponent({
 
   return (
     <>
-      {tooltipGlobalStyles}
-      <Box 
-        flex={3} 
-        sx={{ 
+      {getTooltipGlobalStyles(theme)}
+      <Box
+        flex={3}
+        sx={{
           display: { xs: "block" },
-          backgroundColor: "#ffffff",
-          border: "1px solid #e6e6e6",
-          borderRadius: "16px",
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
+          borderRadius: theme.shape.borderRadius + "px",
           overflow: "hidden",
           margin: 1,
-          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+          boxShadow: theme.shadows[1],
         }}
       >
         <MapContainer
@@ -372,6 +376,7 @@ export default function MapComponent({
             events={events}
             onMarkerClick={onMarkerClick}
             selectedEvent={selectedEvent}
+            theme={theme}
           />
         </MapContainer>
       </Box>

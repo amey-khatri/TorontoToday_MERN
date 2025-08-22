@@ -6,6 +6,7 @@ import {
   Typography,
   List,
   ListItem,
+  useTheme,
 } from "@mui/material";
 import {
   Close,
@@ -21,7 +22,7 @@ import {
 const DRAWER_WIDTH = 400;
 const IMAGE_HEIGHT = 180; // Fixed height in pixels for the image section
 
-function CloseButton({ onClose }) {
+function CloseButton({ onClose, theme }) {
   return (
     <Box
       sx={{
@@ -34,19 +35,19 @@ function CloseButton({ onClose }) {
       <IconButton
         onClick={onClose}
         sx={{
-          backgroundColor: "#ffffff",
-          border: "1px solid #e6e6e6",
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
           borderRadius: "50%",
           width: 36,
           height: 36,
-          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-          color: "#1f1f1f",
+          boxShadow: theme.shadows[1],
+          color: theme.palette.text.primary,
           "&:hover": {
-            backgroundColor: "#f5f5f5",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.10)",
+            backgroundColor: theme.palette.action.hover,
+            boxShadow: theme.shadows[2],
           },
           "&:focus-visible": {
-            outline: "2px solid rgba(31,31,31,0.4)",
+            outline: `2px solid ${theme.palette.action.focus}`,
             outlineOffset: 2,
           },
         }}
@@ -103,7 +104,7 @@ function EventImage({ event }) {
   );
 }
 
-function EventDetailsContent({ event }) {
+function EventDetailsContent({ event, theme }) {
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString("en-US", {
@@ -213,7 +214,7 @@ function EventDetailsContent({ event }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{
-                  color: "#1976d2",
+                  color: theme.palette.primary.main,
                   fontFamily: "Alegreya Sans",
                 }}
               >
@@ -228,6 +229,8 @@ function EventDetailsContent({ event }) {
 }
 
 export default function EventDetailsComponent({ event, open, onClose }) {
+  const theme = useTheme();
+
   return (
     <Box
       sx={{
@@ -249,8 +252,8 @@ export default function EventDetailsComponent({ event, open, onClose }) {
             boxSizing: "border-box",
             overflow: "hidden",
             transition: "width 300ms ease",
-            borderLeft: "1px solid #e6e6e6",
-            backgroundColor: "#ffffff",
+            borderLeft: `1px solid ${theme.palette.divider}`,
+            backgroundColor: theme.palette.background.paper,
             borderRadius: "0",
           },
         }}
@@ -265,9 +268,9 @@ export default function EventDetailsComponent({ event, open, onClose }) {
               flexDirection: "column",
             }}
           >
-            <CloseButton onClose={onClose} />
+            <CloseButton onClose={onClose} theme={theme} />
             <EventImage event={event} />
-            <EventDetailsContent event={event} />
+            <EventDetailsContent event={event} theme={theme} />
           </Box>
         )}
       </Drawer>

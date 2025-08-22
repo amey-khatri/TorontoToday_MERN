@@ -1,6 +1,7 @@
 import React from "react";
 import { Autocomplete, TextField, Box, InputAdornment } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import { useTheme } from "@mui/material/styles";
 
 function getId(e) {
   return e?.eventbriteId ?? e?.id ?? e?.name ?? "";
@@ -12,6 +13,7 @@ export default function SearchBar({
   placeholder = "Search events...",
   sx,
 }) {
+  const theme = useTheme();
   const [inputValue, setInputValue] = React.useState("");
 
   const options = React.useMemo(() => {
@@ -45,22 +47,22 @@ export default function SearchBar({
       onInputChange={(_, value) => setInputValue(value)}
       noOptionsText={inputValue ? "No matches" : "Type to search"}
       renderInput={(params) => (
-        <TextField 
-          {...params} 
-          placeholder={placeholder} 
+        <TextField
+          {...params}
+          placeholder={placeholder}
           variant="outlined"
           sx={{
             "& .MuiOutlinedInput-root": {
               borderRadius: "12px",
-              backgroundColor: "#ffffff",
-              border: "1px solid #e6e6e6",
+              backgroundColor: theme.palette.background.paper,
+              border: `1px solid ${theme.palette.divider}`,
               fontSize: "14px",
               "&:hover": {
-                borderColor: "#d0d0d0",
+                borderColor: theme.palette.grey[400],
               },
               "&.Mui-focused": {
-                borderColor: "#1f1f1f",
-                boxShadow: "0 0 0 2px rgba(31,31,31,0.1)",
+                borderColor: theme.palette.primary.main,
+                boxShadow: `0 0 0 2px ${theme.palette.primary.main}26`, // 26 = 15% opacity in hex
               },
               "& fieldset": {
                 border: "none",
@@ -70,7 +72,7 @@ export default function SearchBar({
               padding: "12px 16px",
               fontSize: "14px",
               "&::placeholder": {
-                color: "#6e6e6e",
+                color: theme.palette.text.secondary,
                 opacity: 1,
               },
             },
@@ -80,7 +82,9 @@ export default function SearchBar({
             startAdornment: (
               <>
                 <InputAdornment position="start">
-                  <SearchIcon sx={{ color: "#6e6e6e", fontSize: 20 }} />
+                  <SearchIcon
+                    sx={{ color: theme.palette.text.secondary, fontSize: 20 }}
+                  />
                 </InputAdornment>
                 {params.InputProps.startAdornment}
               </>
@@ -90,12 +94,14 @@ export default function SearchBar({
       )}
       renderOption={(props, option) => (
         <li {...props} key={getId(option)}>
-          <Box sx={{ 
-            display: "flex", 
-            alignItems: "center", 
-            gap: 1.5,
-            py: 1
-          }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1.5,
+              py: 1,
+            }}
+          >
             <Box
               component="img"
               src={option?.image}
@@ -105,18 +111,18 @@ export default function SearchBar({
                 height: 28,
                 objectFit: "cover",
                 borderRadius: "8px",
-                bgcolor: "#f0f0f0",
+                bgcolor: theme.palette.action.hover,
                 flexShrink: 0,
               }}
               onError={(e) => {
                 e.currentTarget.style.visibility = "hidden";
               }}
             />
-            <Box 
+            <Box
               component="span"
               sx={{
                 fontSize: "14px",
-                color: "#1f1f1f",
+                color: theme.palette.text.primary,
                 fontWeight: 400,
                 overflow: "hidden",
                 textOverflow: "ellipsis",

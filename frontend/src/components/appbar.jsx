@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Box,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { styled, useTheme } from "@mui/material/styles";
 import FiltersButton from "./filters";
 import SearchBar from "./searchbar";
 
@@ -15,16 +10,18 @@ const StyledToolbar = styled(Toolbar)({
 });
 
 function ToolBarComponent({ events, setFilteredEvents, onMarkerClick }) {
+  const theme = useTheme();
+
   return (
     <StyledToolbar sx={{ paddingY: 1 }}>
-      <Typography 
-        variant="h5" 
-        component="div" 
-        sx={{ 
+      <Typography
+        variant="h5"
+        component="div"
+        sx={{
           marginLeft: 1,
           fontWeight: 600,
-          color: "#1f1f1f",
-          fontSize: "20px"
+          color: theme.palette.text.primary,
+          fontSize: "20px",
         }}
       >
         TorontoToday
@@ -43,14 +40,16 @@ export default function AppBarComponent({
   setFilteredEvents,
   onMarkerClick,
 }) {
+  const theme = useTheme();
+
   return (
     <AppBar
       position="sticky"
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        backgroundColor: "#ffffff",
-        borderBottom: "1px solid #e6e6e6",
-        boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+        backgroundColor: theme.palette.background.paper,
+        borderBottom: `1px solid ${theme.palette.divider}`,
+        boxShadow: theme.shadows[1],
       }}
     >
       <ToolBarComponent

@@ -12,6 +12,9 @@ const ubereatsEventsTheme = createTheme({
       main: "#06c167",
       contrastText: "#ffffff",
     },
+    marker: {
+      cluster: "#0091ffb9",
+    },
     background: {
       default: "#f6f6f6",
       paper: "#ffffff",

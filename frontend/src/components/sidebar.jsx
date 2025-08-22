@@ -18,6 +18,8 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useTheme } from "@mui/material/styles";
 
 function EventCard({ event, onEventClick }) {
+  const theme = useTheme();
+
   const formatDateTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString("en-US", {
@@ -33,17 +35,20 @@ function EventCard({ event, onEventClick }) {
     <ListItem sx={{ paddingRight: 0, paddingY: 0.5 }}>
       <Card
         sx={{
-          bgcolor: "#ffffff",
-          borderRadius: "16px",
-          border: "1px solid #e6e6e6",
+          bgcolor: theme.palette.background.paper,
+          borderRadius: theme.shape.borderRadius + "px",
+          border: `1px solid ${theme.palette.divider}`,
           boxShadow: "none",
           flexGrow: 1,
-          transition: "all 150ms ease",
+          transition: `all ${theme.transitions.duration.shortest}ms ${theme.transitions.easing.easeOut}`,
           overflow: "hidden",
           "&:hover": {
-            boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+            boxShadow: theme.shadows[1],
             transform: "scale(1.01)",
-            borderColor: "rgba(31,31,31,0.08)",
+            borderColor: `rgba(${theme.palette.primary.main.replace(
+              "#",
+              ""
+            )}, 0.08)`,
           },
         }}
       >
@@ -53,46 +58,46 @@ function EventCard({ event, onEventClick }) {
             height="140"
             src={event.image}
             alt={event.name}
-            sx={{ 
+            sx={{
               objectFit: "cover",
-              borderRadius: "16px 16px 0 0"
+              borderRadius: `${theme.shape.borderRadius}px ${theme.shape.borderRadius}px 0 0`,
             }}
           />
           <CardContent sx={{ padding: "12px 16px" }}>
-            <Typography 
-              variant="subtitle1" 
+            <Typography
+              variant="subtitle1"
               component="div"
               sx={{
                 fontWeight: 600,
                 fontSize: "14px",
                 lineHeight: 1.3,
-                color: "#1f1f1f",
+                color: theme.palette.text.primary,
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
-                marginBottom: "8px"
+                marginBottom: "8px",
               }}
             >
               {event.name}
             </Typography>
             <Box
-              sx={{ 
-                display: "flex", 
+              sx={{
+                display: "flex",
                 alignItems: "center",
                 gap: 0.5,
-                marginBottom: "8px"
+                marginBottom: "8px",
               }}
             >
               <AccessTimeFilledIcon
                 sx={{
                   fontSize: "14px",
-                  color: "#6e6e6e",
+                  color: theme.palette.text.secondary,
                 }}
               />
-              <Typography 
-                variant="caption" 
+              <Typography
+                variant="caption"
                 sx={{
-                  color: "#6e6e6e",
+                  color: theme.palette.text.secondary,
                   fontSize: "12px",
                   lineHeight: 1.3,
                 }}
@@ -104,8 +109,8 @@ function EventCard({ event, onEventClick }) {
               {event.venueName && (
                 <Box
                   sx={{
-                    backgroundColor: "#f0f0f0",
-                    color: "#1f1f1f",
+                    backgroundColor: theme.palette.grey[100],
+                    color: theme.palette.text.primary,
                     borderRadius: "16px",
                     padding: "2px 8px",
                     fontSize: "11px",
@@ -119,8 +124,11 @@ function EventCard({ event, onEventClick }) {
               {event.price && event.price !== "0.00" && (
                 <Box
                   sx={{
-                    backgroundColor: event.price === "Sold Out" ? "#ea4335" : "#06c167",
-                    color: "#ffffff",
+                    backgroundColor:
+                      event.price === "Sold Out"
+                        ? theme.palette.error.main
+                        : theme.palette.success.main,
+                    color: theme.palette.common.white,
                     borderRadius: "16px",
                     padding: "2px 8px",
                     fontSize: "11px",
@@ -134,8 +142,8 @@ function EventCard({ event, onEventClick }) {
               {event.category && (
                 <Box
                   sx={{
-                    backgroundColor: "#f0f0f0",
-                    color: "#1f1f1f",
+                    backgroundColor: theme.palette.grey[100],
+                    color: theme.palette.text.primary,
                     borderRadius: "16px",
                     padding: "2px 8px",
                     fontSize: "11px",
@@ -176,23 +184,23 @@ export default function SidebarComponent({
         }}
       >
         <Box
-          sx={{ 
-            p: 2, 
-            textAlign: "center", 
+          sx={{
+            p: 2,
+            textAlign: "center",
             alignContent: "center",
-            backgroundColor: "#f6f6f6",
-            border: "1px solid #e6e6e6",
-            borderRadius: "16px",
-            margin: 2
+            backgroundColor: theme.palette.background.default,
+            border: `1px solid ${theme.palette.divider}`,
+            borderRadius: theme.shape.borderRadius + "px",
+            margin: 2,
           }}
           height="100%"
           width="100%"
         >
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              color: "#1f1f1f", 
-              fontWeight: 600 
+          <Typography
+            variant="h6"
+            sx={{
+              color: theme.palette.text.primary,
+              fontWeight: 600,
             }}
           >
             No Events Found
@@ -227,9 +235,9 @@ export default function SidebarComponent({
               easing: theme.transitions.easing.sharp,
               duration: theme.transitions.duration.enteringScreen,
             }),
-            backgroundColor: "#f6f6f6",
+            backgroundColor: theme.palette.background.default,
             border: "none",
-            borderRight: open ? "1px solid #e6e6e6" : "none",
+            borderRight: open ? `1px solid ${theme.palette.divider}` : "none",
           },
         }}
       >
@@ -345,19 +353,19 @@ function ToggleSidebarButton({ open, onToggle, DRAWER_WIDTH }) {
       <IconButton
         onClick={onToggle}
         sx={{
-          backgroundColor: "#ffffff",
-          border: "1px solid #e6e6e6",
+          backgroundColor: theme.palette.background.paper,
+          border: `1px solid ${theme.palette.divider}`,
           borderRadius: "12px",
           width: 32,
           height: 48,
-          boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
-          color: "#1f1f1f",
+          boxShadow: theme.shadows[1],
+          color: theme.palette.text.primary,
           "&:hover": {
-            backgroundColor: "#f5f5f5",
-            boxShadow: "0 4px 16px rgba(0,0,0,0.10)",
+            backgroundColor: theme.palette.action.hover,
+            boxShadow: theme.shadows[2],
           },
           "&:focus-visible": {
-            outline: "2px solid rgba(31,31,31,0.4)",
+            outline: `2px solid ${theme.palette.primary.main}`,
             outlineOffset: 2,
           },
         }}

@@ -10,7 +10,6 @@ import EventDetailsComponent from "./components/eventdetails";
 
 export default function App() {
   const theme = useTheme();
-  const toolbarHeight = theme.mixins.toolbar.minHeight;
 
   // State to hold the fetched events
   const [events, setEvents] = useState([]);
@@ -82,7 +81,11 @@ export default function App() {
 
   return (
     <>
-      <Box height="100vh" width="100vw" sx={{ backgroundColor: "#f6f6f6" }}>
+      <Box
+        height="100vh"
+        width="100vw"
+        sx={{ backgroundColor: theme.palette.background.default }}
+      >
         <AppBarComponent
           events={events}
           setFilteredEvents={setFilteredEvents}
@@ -96,7 +99,7 @@ export default function App() {
           sx={{
             height: `calc(100vh - 66px)`,
             overflow: "hidden",
-            backgroundColor: "#f6f6f6",
+            backgroundColor: theme.palette.background.default,
           }}
         >
           <SidebarComponent

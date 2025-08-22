@@ -13,6 +13,7 @@ import {
   Typography,
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
+import { useTheme } from "@mui/material/styles";
 
 export const defaultFilters = {
   categories: [],
@@ -62,6 +63,7 @@ function applyFilters(list, filters) {
 }
 
 export default function FiltersButton({ events = [], setFilteredEvents }) {
+  const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -118,50 +120,50 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
           fontWeight: 500,
           fontSize: "14px",
           padding: "8px 16px",
-          backgroundColor: "#f0f0f0",
-          color: "#1f1f1f",
-          border: "1px solid #e6e6e6",
-          transition: "all 150ms ease",
+          backgroundColor: theme.palette.grey[100],
+          color: theme.palette.text.primary,
+          border: `1px solid ${theme.palette.divider}`,
+          transition: `all ${theme.transitions.duration.shortest}ms ${theme.transitions.easing.easeOut}`,
           "&:hover": {
-            backgroundColor: "#e6e6e6",
-            boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
+            backgroundColor: theme.palette.grey[200],
+            boxShadow: theme.shadows[1],
           },
           "&:focus-visible": {
-            outline: "2px solid rgba(31,31,31,0.4)",
+            outline: `2px solid ${theme.palette.primary.main}`,
             outlineOffset: 2,
           },
         }}
       >
         Filters{" "}
         {activeCount ? (
-          <Chip 
-            size="small" 
-            label={activeCount} 
-            sx={{ 
+          <Chip
+            size="small"
+            label={activeCount}
+            sx={{
               ml: 1,
               height: "20px",
               fontSize: "11px",
               fontWeight: 600,
-              backgroundColor: "#1f1f1f",
-              color: "#ffffff",
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.primary.contrastText,
               "& .MuiChip-label": {
                 padding: "0 6px",
               },
-            }} 
+            }}
           />
         ) : null}
       </Button>
 
-      <Menu 
-        anchorEl={anchorEl} 
-        open={open} 
-        onClose={handleClose} 
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
         keepMounted
         sx={{
           "& .MuiPaper-root": {
             borderRadius: "12px",
-            border: "1px solid #e6e6e6",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+            border: `1px solid ${theme.palette.divider}`,
+            boxShadow: theme.shadows[3],
             marginTop: "8px",
           },
         }}
@@ -169,13 +171,13 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
         <Box sx={{ p: 3, width: 340 }}>
           <Stack spacing={3}>
             <Box>
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  mb: 1.5, 
-                  fontWeight: 600, 
-                  color: "#1f1f1f",
-                  fontSize: "14px" 
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  mb: 1.5,
+                  fontWeight: 600,
+                  color: theme.palette.text.primary,
+                  fontSize: "14px",
                 }}
               >
                 Categories
@@ -195,15 +197,15 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
                     sx={{
                       "& .MuiOutlinedInput-root": {
                         borderRadius: "12px",
-                        backgroundColor: "#ffffff",
-                        border: "1px solid #e6e6e6",
+                        backgroundColor: theme.palette.background.paper,
+                        border: `1px solid ${theme.palette.divider}`,
                         fontSize: "14px",
                         "&:hover": {
-                          borderColor: "#d0d0d0",
+                          borderColor: theme.palette.grey[400],
                         },
                         "&.Mui-focused": {
-                          borderColor: "#1f1f1f",
-                          boxShadow: "0 0 0 2px rgba(31,31,31,0.1)",
+                          borderColor: theme.palette.primary.main,
+                          boxShadow: `0 0 0 2px ${theme.palette.primary.main}26`,
                         },
                         "& fieldset": {
                           border: "none",
@@ -238,13 +240,13 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
               />
             </Box>
             <Box>
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  mb: 1.5, 
-                  fontWeight: 600, 
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  mb: 1.5,
+                  fontWeight: 600,
                   color: "#1f1f1f",
-                  fontSize: "14px" 
+                  fontSize: "14px",
                 }}
               >
                 Formats
@@ -309,13 +311,13 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
 
             {/* Max price slider */}
             <Box>
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  mb: 1.5, 
-                  fontWeight: 600, 
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  mb: 1.5,
+                  fontWeight: 600,
                   color: "#1f1f1f",
-                  fontSize: "14px" 
+                  fontSize: "14px",
                 }}
               >
                 Max price: {priceLabel(filters.priceMax ?? 500)}
@@ -364,13 +366,13 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
                 }}
               />
               {filters.freeOnly ? (
-                <Typography 
-                  variant="caption" 
-                  sx={{ 
+                <Typography
+                  variant="caption"
+                  sx={{
                     color: "#6e6e6e",
                     fontSize: "12px",
                     display: "block",
-                    mt: 1
+                    mt: 1,
                   }}
                 >
                   Free only is enabled; price filter is ignored.
@@ -403,13 +405,13 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
               }
             />
             <Box>
-              <Typography 
-                variant="subtitle2" 
-                sx={{ 
-                  mb: 1.5, 
-                  fontWeight: 600, 
+              <Typography
+                variant="subtitle2"
+                sx={{
+                  mb: 1.5,
+                  fontWeight: 600,
                   color: "#1f1f1f",
-                  fontSize: "14px" 
+                  fontSize: "14px",
                 }}
               >
                 Date Range
@@ -490,9 +492,14 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
               </Stack>
             </Box>
 
-            <Stack direction="row" justifyContent="flex-end" spacing={2} sx={{ mt: 2 }}>
-              <Button 
-                size="medium" 
+            <Stack
+              direction="row"
+              justifyContent="flex-end"
+              spacing={2}
+              sx={{ mt: 2 }}
+            >
+              <Button
+                size="medium"
                 onClick={handleClear}
                 sx={{
                   borderRadius: "999px",
@@ -508,9 +515,9 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
               >
                 Clear
               </Button>
-              <Button 
-                size="medium" 
-                variant="contained" 
+              <Button
+                size="medium"
+                variant="contained"
                 onClick={handleApply}
                 sx={{
                   borderRadius: "999px",
