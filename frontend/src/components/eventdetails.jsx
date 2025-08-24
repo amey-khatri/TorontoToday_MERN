@@ -244,7 +244,7 @@ export default function EventDetailsComponent({
         onClose={onClose}
         sx={{
           "& .MuiDrawer-paper": {
-            height: "90vh",
+            height: "60vh",
             borderTopLeftRadius: theme.shape.borderRadius * 2,
             borderTopRightRadius: theme.shape.borderRadius * 2,
             backgroundColor: theme.palette.background.paper,
