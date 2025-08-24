@@ -83,12 +83,38 @@ async function fetchEventData(event_scraped) {
       rateLimitHit = true;
       return null;
     }
+
+    if (err.response?.status === 403) {
+      console.log(
+        `❌ Not authorized for event ${event_id}, deleting from collection...`
+      );
+      try {
+        await Event_ids.deleteOne({ _id: event_scraped._id });
+        console.log(`Deleted unauthorized event ID ${event_id}`);
+      } catch (deleteErr) {
+        console.error(
+          `Failed to delete event ID ${event_id}:`,
+          deleteErr.message
+        );
+      }
+      return null;
+    }
+
     console.error(
       `Error fetching event ${event_id}:`,
       err.response?.data || err.message
     );
 
-    Event_ids.deleteOne({ _id: event_scraped._id });
+    // Delete event ID for other errors as well to avoid reprocessing
+    try {
+      await Event_ids.deleteOne({ _id: event_scraped._id });
+      console.log(`Deleted problematic event ID ${event_id}`);
+    } catch (deleteErr) {
+      console.error(
+        `Failed to delete event ID ${event_id}:`,
+        deleteErr.message
+      );
+    }
 
     return null;
   }
