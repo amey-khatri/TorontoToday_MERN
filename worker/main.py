@@ -10,7 +10,7 @@ import certifi
 
 import os
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pymongo import MongoClient, UpdateOne
 from dotenv import load_dotenv
 
@@ -49,17 +49,23 @@ def upsert_event_ids(ids):
 
 CITY_SLUG = "canada--toronto"
 BASE = "https://www.eventbrite.ca"
+
+# Generate dynamic date range: today to 14 days from now
+start_date = datetime.now().strftime('%Y-%m-%d')
+end_date = (datetime.now() + timedelta(days=14)).strftime('%Y-%m-%d')
+
 # Widen coverage by hitting several stable listing variants
 SEED_PATHS = [
-    f"/d/{CITY_SLUG}/all-events/?page={{page}}",
-    f"/d/{CITY_SLUG}/today/?page={{page}}",
-    f"/d/{CITY_SLUG}/this-week/?page={{page}}",
-    f"/d/{CITY_SLUG}/this-weekend/?page={{page}}",
-    f"/d/{CITY_SLUG}/next-week/?page={{page}}",
-    f"/d/{CITY_SLUG}/free--events/?page={{page}}",
+    f"d/{CITY_SLUG}/all-events/?page={{page}}&start_date={start_date}&end_date={end_date}",
+    # f"/d/{CITY_SLUG}/all-events/?page={{page}}",
+    # f"/d/{CITY_SLUG}/today/?page={{page}}",
+    # f"/d/{CITY_SLUG}/this-week/?page={{page}}",
+    # f"/d/{CITY_SLUG}/this-weekend/?page={{page}}",
+    # f"/d/{CITY_SLUG}/next-week/?page={{page}}",
+    # f"/d/{CITY_SLUG}/free--events/?page={{page}}",
 ]
 
-MAX_PAGES_PER_SEED = 20   # tune how deep you want to crawl
+MAX_PAGES_PER_SEED = 80   # tune how deep you want to crawl
 REQUEST_TIMEOUT = 40
 EVENT_ID_RE = re.compile(r"/e/[^/]*-(\d+)(?:/|$)")
 
@@ -122,6 +128,9 @@ def scrape_event_ids():
     all_ids = set()
     pages_crawled = 0
     
+    print(f"Scraping events from {start_date} to {end_date}")
+    print(f"Sample URL: {urljoin(BASE, SEED_PATHS[0].format(page=1))}")
+    
     data = ""
 
     for url in generate_seed_urls():
@@ -154,7 +163,7 @@ def main():
     print(f"Upserted {len(ids)} IDs (changed {changed}) to {DB_NAME}.{COLL_NAME}")
 
     response = requests.post(f'{DATABASE_URL}/events/fetch-events')
-    
+
     print("Triggered backend to fetch events:", response.status_code, response.text)
 
 

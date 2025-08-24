@@ -87,6 +87,9 @@ async function fetchEventData(event_scraped) {
       `Error fetching event ${event_id}:`,
       err.response?.data || err.message
     );
+
+    Event_ids.deleteOne({ _id: event_scraped._id });
+
     return null;
   }
 }
