@@ -43,8 +43,10 @@ function EventCard({ event, onEventClick, isMobile = false }) {
     }
   };
 
+  const cardpaddingright = isMobile ? 2 : 0;
+
   return (
-    <ListItem sx={{ paddingRight: 0, paddingY: 0.5 }}>
+    <ListItem sx={{ paddingRight: cardpaddingright, paddingY: 0.5 }}>
       <Card
         sx={{
           bgcolor: theme.palette.background.paper,
@@ -244,6 +246,7 @@ export default function SidebarComponent({
           anchor="bottom"
           open={open}
           onClose={onToggle}
+          ModalProps={{ keepMounted: true }}
           sx={{
             "& .MuiDrawer-paper": {
               height: "80vh",
@@ -300,6 +303,7 @@ export default function SidebarComponent({
           open={open}
           drawerWidth={DRAWER_WIDTH}
           onEventClick={onEventClick}
+          isMobile={false}
         />
       </Drawer>
       <ToggleSidebarButton
@@ -316,7 +320,7 @@ function ScrollableEventList({
   open,
   drawerWidth,
   onEventClick,
-  isMobile = false,
+  isMobile,
 }) {
   const theme = useTheme();
   const scrollRef = React.useRef(null);

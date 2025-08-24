@@ -36,7 +36,8 @@ export default function App() {
   function handleEventDetailsClose() {
     setEventDetailsOpen(false);
     setSelectedEvent(null);
-    if (!isMobile) setSidebarOpen(previousSidebarState);
+    // Restore sidebar state for both mobile and desktop
+    setSidebarOpen(previousSidebarState);
   }
 
   // Fetch events from backend

@@ -64,12 +64,20 @@ const selectedIcon = new L.Icon({
   shadowSize: [41, 41],
 });
 
-function CreateCardPopup({ event }) {
+function CreateCardPopup({ event, onClick }) {
   const theme = useTheme();
+
+  const handleClick = (e) => {
+    e.stopPropagation(); // Prevent the marker click from firing
+    if (onClick) {
+      onClick(event);
+    }
+  };
 
   return (
     <Box>
       <Card
+        onClick={handleClick}
         sx={{
           minWidth: 200,
           maxWidth: 240,
@@ -185,9 +193,39 @@ function MapEventFocusHandler({ selectedEvent }) {
 }
 
 // Clustered markers layer
-function ClustersLayer({ events = [], onMarkerClick, selectedEvent, theme }) {
+function ClustersLayer({
+  events = [],
+  onMarkerClick,
+  selectedEvent,
+  theme,
+  isMobile = false,
+}) {
   const map = useMap();
   const [clusters, setClusters] = React.useState([]);
+  const [mobileTooltipEventId, setMobileTooltipEventId] = React.useState(null);
+
+  const handleMobileMarkerClick = React.useCallback(
+    (event) => {
+      const eventId = event.eventbriteId ?? event.id;
+
+      if (mobileTooltipEventId === eventId) {
+        // Second click - show event details and hide tooltip
+        setMobileTooltipEventId(null);
+        onMarkerClick(event);
+      } else {
+        // First click - show tooltip only
+        setMobileTooltipEventId(eventId);
+      }
+    },
+    [mobileTooltipEventId, onMarkerClick]
+  );
+
+  // Create a handler that includes reference to original handler
+  const mobileHandler = React.useMemo(() => {
+    const handler = handleMobileMarkerClick;
+    handler.originalHandler = onMarkerClick;
+    return handler;
+  }, [handleMobileMarkerClick, onMarkerClick]);
 
   const points = React.useMemo(
     () =>
@@ -231,10 +269,21 @@ function ClustersLayer({ events = [], onMarkerClick, selectedEvent, theme }) {
   React.useEffect(() => {
     if (!map) return;
     map.on("moveend zoomend", refresh);
+
+    // Add click handler to hide mobile tooltips when clicking on map
+    const handleMapClick = () => {
+      if (isMobile && mobileTooltipEventId) {
+        setMobileTooltipEventId(null);
+      }
+    };
+
+    map.on("click", handleMapClick);
+
     return () => {
       map.off("moveend zoomend", refresh);
+      map.off("click", handleMapClick);
     };
-  }, [map, refresh]);
+  }, [map, refresh, isMobile, mobileTooltipEventId]);
 
   const createClusterIcon = (count) => {
     const size = count < 10 ? 30 : count < 100 ? 36 : 44;
@@ -284,18 +333,22 @@ function ClustersLayer({ events = [], onMarkerClick, selectedEvent, theme }) {
         }
 
         const event = c.properties.event;
+        const eventId = event.eventbriteId ?? event.id;
         const isSelected =
           selectedEvent &&
-          (selectedEvent.eventbriteId ?? selectedEvent.id) ===
-            (event.eventbriteId ?? event.id);
+          (selectedEvent.eventbriteId ?? selectedEvent.id) === eventId;
+
+        const showTooltip = isMobile ? mobileTooltipEventId === eventId : false;
 
         return (
           <ClickableMarker
-            key={event.eventbriteId ?? event.id}
+            key={eventId}
             event={event}
             position={[event.location.latitude, event.location.longitude]}
-            onMarkerClick={onMarkerClick}
+            onMarkerClick={isMobile ? mobileHandler : onMarkerClick}
             isSelected={!!isSelected}
+            isMobile={isMobile}
+            showTooltip={showTooltip}
           />
         );
       })}
@@ -303,9 +356,26 @@ function ClustersLayer({ events = [], onMarkerClick, selectedEvent, theme }) {
   );
 }
 
-function ClickableMarker({ event, position, onMarkerClick, isSelected }) {
+function ClickableMarker({
+  event,
+  position,
+  onMarkerClick,
+  isSelected,
+  isMobile = false,
+  showTooltip = false,
+}) {
   const handleClick = () => {
     onMarkerClick(event);
+  };
+
+  const handleTooltipClick = (event) => {
+    // For tooltip clicks, we want to open the event details directly
+    // This bypasses the mobile two-click behavior
+    if (onMarkerClick.originalHandler) {
+      onMarkerClick.originalHandler(event);
+    } else {
+      onMarkerClick(event);
+    }
   };
 
   return (
@@ -321,10 +391,10 @@ function ClickableMarker({ event, position, onMarkerClick, isSelected }) {
         className="mapPopup"
         direction="top"
         offset={isSelected ? [50, -80] : [0, -55]}
-        permanent={false}
+        permanent={isMobile ? showTooltip : false}
         arrow
       >
-        <CreateCardPopup event={event} />
+        <CreateCardPopup event={event} onClick={handleTooltipClick} />
       </Tooltip>
     </Marker>
   );
@@ -374,6 +444,7 @@ export default function MapComponent({
             onMarkerClick={onMarkerClick}
             selectedEvent={selectedEvent}
             theme={theme}
+            isMobile={isMobile}
           />
         </MapContainer>
       </Box>

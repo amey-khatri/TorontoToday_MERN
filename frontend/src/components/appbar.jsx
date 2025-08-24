@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, useMediaQuery } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import FiltersButton from "./filters";
 import SearchBar from "./searchbar";
@@ -12,16 +12,18 @@ const StyledToolbar = styled(Toolbar)({
 
 function ToolBarComponent({ events, setFilteredEvents, onMarkerClick }) {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   return (
-    <StyledToolbar sx={{ paddingY: 1, position: "relative" }}>
+    <StyledToolbar sx={{ paddingY: 1 }}>
       {/* Left side - Logo and Title */}
-      <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
+      <Box sx={{ display: "flex", alignItems: "center", flex: "1 1 0" }}>
         <img
           src={TTLogo}
           alt="TOToday Logo"
           style={{ height: 48, overflow: "hidden" }}
         />
+        {/* Hide title on mobile to give more space to search */}
         <Typography
           variant="h5"
           component="div"
@@ -31,31 +33,46 @@ function ToolBarComponent({ events, setFilteredEvents, onMarkerClick }) {
             color: theme.palette.text.primary,
             fontSize: "20px",
             paddingLeft: "12px",
+            display: { xs: "none", sm: "block" },
           }}
         >
           TorontoToday
         </Typography>
       </Box>
 
-      {/* Center - Search Bar (absolutely positioned to stay centered) */}
+      {/* Center - Search Bar (always expanded) */}
       <Box
         sx={{
-          position: "absolute",
-          left: "50%",
-          top: "50%",
-          transform: "translate(-50%, -50%)",
-          width: { xs: "200px", sm: "300px", md: "400px" },
-          maxWidth: { xs: "50vw", sm: "40vw" },
+          display: "flex",
+          justifyContent: "center",
+          flex: "1 1 0",
+          px: 2,
         }}
       >
-        <SearchBar events={events} onMarkerClick={onMarkerClick} />
+        <Box
+          sx={{
+            width: { xs: "200px", sm: "300px", md: "400px" },
+            maxWidth: "100%",
+          }}
+        >
+          <SearchBar events={events} onMarkerClick={onMarkerClick} />
+        </Box>
       </Box>
 
       {/* Right side - Filters */}
       <Box
-        sx={{ display: "flex", gap: 1, flex: 1, justifyContent: "flex-end" }}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "flex-end",
+          flex: "1 1 0",
+        }}
       >
-        <FiltersButton events={events} setFilteredEvents={setFilteredEvents} />
+        <FiltersButton
+          events={events}
+          setFilteredEvents={setFilteredEvents}
+          iconOnly={isMobile}
+        />
       </Box>
     </StyledToolbar>
   );
