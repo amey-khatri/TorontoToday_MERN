@@ -5,6 +5,7 @@ import {
   Checkbox,
   Chip,
   FormControlLabel,
+  IconButton,
   Menu,
   Stack,
   TextField,
@@ -62,7 +63,11 @@ function applyFilters(list, filters) {
   });
 }
 
-export default function FiltersButton({ events = [], setFilteredEvents }) {
+export default function FiltersButton({
+  events = [],
+  setFilteredEvents,
+  iconOnly = false,
+}) {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -116,48 +121,92 @@ export default function FiltersButton({ events = [], setFilteredEvents }) {
 
   return (
     <>
-      <Button
-        startIcon={<FilterListIcon />}
-        onClick={handleOpen}
-        sx={{
-          borderRadius: "999px",
-          textTransform: "none",
-          fontWeight: 500,
-          fontSize: "14px",
-          padding: "8px 16px",
-          backgroundColor: theme.palette.grey[10],
-          color: theme.palette.text.primary,
-          border: `1px solid ${theme.palette.divider}`,
-          transition: `all ${theme.transitions.duration.shortest}ms ${theme.transitions.easing.easeOut}`,
-          "&:hover": {
-            backgroundColor: theme.palette.grey[200],
-            boxShadow: theme.shadows[1],
-          },
-          "&:focus-visible": {
-            outline: `2px solid ${theme.palette.primary.main}`,
-            outlineOffset: 2,
-          },
-        }}
-      >
-        Filters{" "}
-        {activeCount ? (
-          <Chip
-            size="small"
-            label={activeCount}
-            sx={{
-              ml: 1,
-              height: "20px",
-              fontSize: "11px",
-              fontWeight: 600,
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.primary.contrastText,
-              "& .MuiChip-label": {
-                padding: "0 6px",
-              },
-            }}
-          />
-        ) : null}
-      </Button>
+      {iconOnly ? (
+        <IconButton
+          onClick={handleOpen}
+          sx={{
+            color: theme.palette.text.primary,
+            borderRadius: "8px",
+            backgroundColor: theme.palette.grey[10],
+            transition: `all ${theme.transitions.duration.shortest}ms ${theme.transitions.easing.easeOut}`,
+            "&:hover": {
+              backgroundColor: theme.palette.grey[200],
+              boxShadow: theme.shadows[1],
+            },
+            "&:focus-visible": {
+              outline: `2px solid ${theme.palette.primary.main}`,
+              outlineOffset: 2,
+            },
+            position: "relative",
+          }}
+        >
+          <FilterListIcon />
+          {activeCount > 0 && (
+            <Box
+              sx={{
+                position: "absolute",
+                top: -6,
+                right: -6,
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                borderRadius: "50%",
+                minWidth: 20,
+                height: 20,
+                fontSize: "11px",
+                fontWeight: 600,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: `2px solid ${theme.palette.background.paper}`,
+              }}
+            >
+              {activeCount}
+            </Box>
+          )}
+        </IconButton>
+      ) : (
+        <Button
+          startIcon={<FilterListIcon />}
+          onClick={handleOpen}
+          sx={{
+            borderRadius: "999px",
+            textTransform: "none",
+            fontWeight: 500,
+            fontSize: "14px",
+            padding: "8px 16px",
+            backgroundColor: theme.palette.grey[10],
+            color: theme.palette.text.primary,
+            transition: `all ${theme.transitions.duration.shortest}ms ${theme.transitions.easing.easeOut}`,
+            "&:hover": {
+              backgroundColor: theme.palette.grey[200],
+              boxShadow: theme.shadows[1],
+            },
+            "&:focus-visible": {
+              outline: `2px solid ${theme.palette.primary.main}`,
+              outlineOffset: 2,
+            },
+          }}
+        >
+          Filters{" "}
+          {activeCount ? (
+            <Chip
+              size="small"
+              label={activeCount}
+              sx={{
+                ml: 1,
+                height: "20px",
+                fontSize: "11px",
+                fontWeight: 600,
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.primary.contrastText,
+                "& .MuiChip-label": {
+                  padding: "0 6px",
+                },
+              }}
+            />
+          ) : null}
+        </Button>
+      )}
 
       <Menu
         anchorEl={anchorEl}

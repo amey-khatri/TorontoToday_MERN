@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./App.css";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, useMediaQuery } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
 import AppBarComponent from "./components/appbar";
@@ -10,6 +10,7 @@ import EventDetailsComponent from "./components/eventdetails";
 
 export default function App() {
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // State to hold the fetched events
   const [events, setEvents] = useState([]);
@@ -17,13 +18,13 @@ export default function App() {
   const [error, setError] = useState(null);
   const [filteredEvents, setFilteredEvents] = useState([]);
 
-  // State for sidebar toggle
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // State for sidebar toggle - mobile sidebar starts closed
+  const [sidebarOpen, setSidebarOpen] = useState(!isMobile);
 
   //State for selected event in map
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [eventdetailsOpen, setEventDetailsOpen] = useState(false);
-  const [previousSidebarState, setPreviousSidebarState] = useState(true);
+  const [previousSidebarState, setPreviousSidebarState] = useState(!isMobile);
 
   function handleMarkerClick(event) {
     if (!eventdetailsOpen) setPreviousSidebarState(sidebarOpen);
@@ -35,6 +36,7 @@ export default function App() {
   function handleEventDetailsClose() {
     setEventDetailsOpen(false);
     setSelectedEvent(null);
+    // Restore sidebar state for both mobile and desktop
     setSidebarOpen(previousSidebarState);
   }
 
@@ -100,6 +102,7 @@ export default function App() {
             height: `calc(100vh - 66px)`,
             overflow: "hidden",
             backgroundColor: theme.palette.background.default,
+            position: "relative",
           }}
         >
           <SidebarComponent
@@ -107,17 +110,20 @@ export default function App() {
             open={sidebarOpen}
             onToggle={() => setSidebarOpen(!sidebarOpen)}
             onEventClick={handleMarkerClick}
+            isMobile={isMobile}
           />
           <EventDetailsComponent
             event={selectedEvent}
             open={eventdetailsOpen}
             onClose={handleEventDetailsClose}
+            isMobile={isMobile}
           />
           <MapComponent
             events={filteredEvents}
             sidebarOpen={sidebarOpen || eventdetailsOpen}
             onMarkerClick={handleMarkerClick}
             selectedEvent={selectedEvent}
+            isMobile={isMobile}
           />
         </Stack>
       </Box>
