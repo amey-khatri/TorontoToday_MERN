@@ -228,8 +228,47 @@ function EventDetailsContent({ event, theme }) {
   );
 }
 
-export default function EventDetailsComponent({ event, open, onClose }) {
+export default function EventDetailsComponent({
+  event,
+  open,
+  onClose,
+  isMobile = false,
+}) {
   const theme = useTheme();
+
+  if (isMobile) {
+    return (
+      <Drawer
+        anchor="bottom"
+        open={open}
+        onClose={onClose}
+        sx={{
+          "& .MuiDrawer-paper": {
+            height: "90vh",
+            borderTopLeftRadius: theme.shape.borderRadius * 2,
+            borderTopRightRadius: theme.shape.borderRadius * 2,
+            backgroundColor: theme.palette.background.paper,
+          },
+        }}
+      >
+        {event && (
+          <Box
+            sx={{
+              position: "relative",
+              height: "100%",
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <CloseButton onClose={onClose} theme={theme} />
+            <EventImage event={event} />
+            <EventDetailsContent event={event} theme={theme} />
+          </Box>
+        )}
+      </Drawer>
+    );
+  }
 
   return (
     <Box

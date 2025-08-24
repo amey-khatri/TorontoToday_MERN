@@ -10,13 +10,16 @@ import {
   ListItem,
   List,
   IconButton,
+  GlobalStyles,
+  Fab,
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import ListIcon from "@mui/icons-material/List";
 import { useTheme } from "@mui/material/styles";
 
-function EventCard({ event, onEventClick }) {
+function EventCard({ event, onEventClick, isMobile = false }) {
   const theme = useTheme();
 
   const formatDateTime = (dateString) => {
@@ -174,6 +177,7 @@ export default function SidebarComponent({
   open = true,
   onToggle,
   onEventClick,
+  isMobile = false,
 }) {
   const theme = useTheme();
 
@@ -181,7 +185,7 @@ export default function SidebarComponent({
     return (
       <Box
         sx={{
-          display: "flex",
+          display: isMobile ? "none" : "flex",
           height: "100%",
           width: open ? DRAWER_WIDTH : COLLAPSED_WIDTH,
           position: "relative",
@@ -214,6 +218,53 @@ export default function SidebarComponent({
     );
   }
 
+  if (isMobile) {
+    return (
+      <>
+        {/* Mobile FAB to open drawer */}
+        <Fab
+          onClick={onToggle}
+          sx={{
+            position: "fixed",
+            bottom: 16,
+            right: 16,
+            zIndex: 1000,
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+            "&:hover": {
+              backgroundColor: theme.palette.primary.dark,
+            },
+          }}
+        >
+          <ListIcon />
+        </Fab>
+
+        {/* Mobile bottom drawer */}
+        <Drawer
+          anchor="bottom"
+          open={open}
+          onClose={onToggle}
+          sx={{
+            "& .MuiDrawer-paper": {
+              height: "80vh",
+              borderTopLeftRadius: theme.shape.borderRadius * 2,
+              borderTopRightRadius: theme.shape.borderRadius * 2,
+              backgroundColor: theme.palette.background.default,
+            },
+          }}
+        >
+          <ScrollableEventList
+            events={events}
+            open={true}
+            drawerWidth="100%"
+            onEventClick={onEventClick}
+            isMobile={true}
+          />
+        </Drawer>
+      </>
+    );
+  }
+
   return (
     <Box
       sx={{
@@ -222,7 +273,6 @@ export default function SidebarComponent({
         position: "relative",
       }}
     >
-      {/* <CustomScrollbarStyles /> */}
       <Drawer
         variant="permanent"
         sx={{
@@ -261,7 +311,14 @@ export default function SidebarComponent({
   );
 }
 
-function ScrollableEventList({ events, open, drawerWidth, onEventClick }) {
+function ScrollableEventList({
+  events,
+  open,
+  drawerWidth,
+  onEventClick,
+  isMobile = false,
+}) {
+  const theme = useTheme();
   const scrollRef = React.useRef(null);
 
   const list = React.useMemo(
@@ -296,16 +353,31 @@ function ScrollableEventList({ events, open, drawerWidth, onEventClick }) {
         position: open ? "relative" : "absolute",
         left: 0,
         overflowY: "auto",
-        overflowX: "hidden", // prevent horizontal scrollbar
+        overflowX: "hidden",
         visibility: open ? "visible" : "hidden",
+        padding: isMobile ? 2 : 0,
       }}
     >
-      <List sx={{ p: 1, m: 0 }}>
+      {isMobile && (
+        <Typography
+          variant="h6"
+          sx={{
+            p: 2,
+            borderBottom: `1px solid ${theme.palette.divider}`,
+            fontWeight: 600,
+            textAlign: "center",
+          }}
+        >
+          Events ({list.length})
+        </Typography>
+      )}
+      <List sx={{ p: isMobile ? 0 : 1, m: 0 }}>
         {visible.map((event, idx) => (
           <EventCard
             key={event.eventbriteId ?? event.id ?? idx}
             event={event}
             onEventClick={onEventClick}
+            isMobile={isMobile}
           />
         ))}
       </List>

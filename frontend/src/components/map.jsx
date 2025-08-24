@@ -335,6 +335,7 @@ export default function MapComponent({
   sidebarOpen,
   onMarkerClick,
   selectedEvent,
+  isMobile = false,
 }) {
   const theme = useTheme();
   const center = [43.6532, -79.3832];
@@ -351,7 +352,7 @@ export default function MapComponent({
           border: `1px solid ${theme.palette.divider}`,
           borderRadius: theme.shape.borderRadius + "px",
           overflow: "hidden",
-          margin: 1,
+          margin: isMobile ? 0 : 1,
           boxShadow: theme.shadows[1],
         }}
       >

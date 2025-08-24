@@ -44,8 +44,8 @@ function ToolBarComponent({ events, setFilteredEvents, onMarkerClick }) {
           left: "50%",
           top: "50%",
           transform: "translate(-50%, -50%)",
-          width: "400px", // Fixed width
-          maxWidth: "40vw", // Responsive but maintains proportion
+          width: { xs: "200px", sm: "300px", md: "400px" },
+          maxWidth: { xs: "50vw", sm: "40vw" },
         }}
       >
         <SearchBar events={events} onMarkerClick={onMarkerClick} />
@@ -53,12 +53,7 @@ function ToolBarComponent({ events, setFilteredEvents, onMarkerClick }) {
 
       {/* Right side - Filters */}
       <Box
-        sx={{
-          display: { xs: "none", sm: "flex" },
-          gap: 1,
-          flex: 1,
-          justifyContent: "flex-end",
-        }}
+        sx={{ display: "flex", gap: 1, flex: 1, justifyContent: "flex-end" }}
       >
         <FiltersButton events={events} setFilteredEvents={setFilteredEvents} />
       </Box>
