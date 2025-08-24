@@ -28,7 +28,7 @@ export default function App() {
 
   function handleMarkerClick(event) {
     if (!eventdetailsOpen) setPreviousSidebarState(sidebarOpen);
-    if (isMobile) setSidebarOpen(false);
+    setSidebarOpen(false);
     setSelectedEvent(event);
     setEventDetailsOpen(true);
   }
