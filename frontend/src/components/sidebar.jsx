@@ -249,7 +249,7 @@ export default function SidebarComponent({
           ModalProps={{ keepMounted: true }}
           sx={{
             "& .MuiDrawer-paper": {
-              height: "60vh",
+              height: "75vh",
               borderTopLeftRadius: theme.shape.borderRadius * 2,
               borderTopRightRadius: theme.shape.borderRadius * 2,
               backgroundColor: theme.palette.background.default,
