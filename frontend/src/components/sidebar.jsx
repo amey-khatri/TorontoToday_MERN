@@ -10,7 +10,6 @@ import {
   ListItem,
   List,
   IconButton,
-  GlobalStyles,
   Fab,
 } from "@mui/material";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
@@ -43,7 +42,7 @@ function EventCard({ event, onEventClick, isMobile = false }) {
     }
   };
 
-  const cardpaddingright = isMobile ? 2 : 0;
+  const cardpaddingright = isMobile ? 2 : 1;
 
   return (
     <ListItem sx={{ paddingRight: cardpaddingright, paddingY: 0.5 }}>
